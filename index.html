@@ -213,6 +213,7 @@ table.spk .sr2:nth-child(odd) td{background:var(--surface2)}
 <div id="overlay"><div class="ov-box"><div class="ov-spin"></div><div class="ov-t" id="ovt">Loading…</div><div class="ov-s" id="ovs">Please wait</div></div></div>
 
 <script>
+  
 const CLIENT_ID = '2d62ed1b-5160-47c6-a26e-005e8f62006c';
 const TENANT_ID = 'c0701940-7b3f-4116-a59f-159078bc3c63';
 
@@ -663,9 +664,20 @@ function showInfo(m){const e=document.getElementById('binfo');document.getElemen
 // ════════════════════════════════════════════════════════
 //  BOOT
 // ════════════════════════════════════════════════════════
-buildNav();
-showWelcome();
-init();
+// ════════════════════════════════════════════════════════
+//  POPUP GUARD — prevents the dashboard from re-initializing
+//  inside the MSAL auth popup window itself (fixes
+//  block_nested_popups / interaction_in_progress errors)
+// ════════════════════════════════════════════════════════
+if (window.opener && window.opener !== window) {
+  // This page loaded inside a popup MSAL opened for sign-in.
+  // Do nothing — let MSAL's own internal popup handler
+  // process the auth response and close this window.
+} else {
+  buildNav();
+  showWelcome();
+  init();
+}
 </script>
 </body>
 </html>
