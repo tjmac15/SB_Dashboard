@@ -5,34 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SecurityBridge | S&C Tracker</title>
 
-<!--
-  ════════════════════════════════════════════════════════
-  ONE-TIME SETUP  (only these 2 lines need editing)
-  ════════════════════════════════════════════════════════
-  1. Go to portal.azure.com
-     → Azure Active Directory → App registrations → New registration
-     → Name: SecurityBridge Dashboard
-     → Supported account types: "Accounts in this org only"
-     → Redirect URI → Single-page application (SPA)
-          http://127.0.0.1:5500/securitybridge.html   ← VS Code Live Server
-       OR http://localhost:8080/securitybridge.html   ← Python http.server
-     → Register
-
-  2. API Permissions → Add → Microsoft Graph (Delegated):
-       Sites.Read.All   Files.Read.All   User.Read
-     → Grant admin consent
-
-  3. Copy Application (client) ID  →  paste as CLIENT_ID below
-     Copy Directory  (tenant)  ID  →  paste as TENANT_ID below
-  ════════════════════════════════════════════════════════
--->
-
-<script src="https://alcdn.msauth.net/browser/3.7.1/js/msal-browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -41,74 +16,64 @@
   --accent:#2563eb;--accent2:#1d4ed8;
   --hdr:#0f172a;--hdr2:#1e3a5f;
   --sys-bg:#eff6ff;--sys-fg:#1e40af;
-  --ab:#eff6ff;--af:#2563eb;
   --radius:6px;--sw:220px;
   --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
 }
 html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--fg);font-size:14px;overflow:hidden;display:flex}
-
 /* ── Sidebar ── */
 #sidebar{width:var(--sw);min-width:var(--sw);height:100vh;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
 .sb-brand{display:flex;align-items:center;gap:8px;padding:18px 16px 14px;border-bottom:1px solid var(--border)}
 .sb-logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#1d4ed8,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.sb-brand-text{font-weight:700;font-size:13px;color:var(--fg);letter-spacing:-.2px}
-.sb-brand-sub{font-size:9px;color:var(--fg3)}
+.sb-brand-t{font-weight:700;font-size:13px;color:var(--fg);letter-spacing:-.2px}
+.sb-brand-s{font-size:9px;color:var(--fg3)}
 .sb-sec{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--fg3);padding:14px 18px 6px;text-transform:uppercase}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px 9px 18px;font-size:12px;color:#475569;cursor:pointer;border-radius:var(--radius);margin:1px 8px;transition:background .12s,color .12s}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px 9px 18px;font-size:12px;color:#475569;cursor:pointer;border-radius:var(--radius);margin:1px 8px;transition:all .12s}
 .nav-item:hover{background:var(--surface2);color:var(--fg)}
-.nav-item.active{background:var(--ab);color:var(--af);font-weight:600}
+.nav-item.active{background:#eff6ff;color:#2563eb;font-weight:600}
 .nav-icon{width:16px;text-align:center;font-size:12px}
 .sb-div{height:1px;background:var(--border);margin:8px 0}
 .sb-ctrl{padding:0 14px}
 .sb-lbl{font-size:10px;font-weight:700;color:var(--fg2);margin-bottom:4px;display:block}
 .sb-ctrl select{width:100%;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:5px 8px;font-size:12px;color:var(--fg);font-family:var(--sans);appearance:none;margin-bottom:10px;cursor:pointer}
-.sb-ctrl select:focus{outline:1px solid var(--accent)}
 .sb-ctrl input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;height:4px;margin-bottom:14px}
 .wk-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .wk-val{font-size:11px;font-weight:700;color:var(--fg);font-family:var(--mono)}
-
-/* ── Auth section in sidebar ── */
+/* ── Auth ── */
 .auth-area{padding:0 14px 14px}
 .auth-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 12px;border:none;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;margin-bottom:6px}
 .auth-btn.primary{background:var(--accent);color:#fff}
 .auth-btn.primary:hover{background:var(--accent2)}
 .auth-btn.danger{background:#fee2e2;color:#b91c1c}
-.auth-btn.danger:hover{background:#fecaca}
-.auth-btn:disabled{opacity:.45;cursor:not-allowed}
-.spin{width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;display:none;flex-shrink:0}
+.spin{width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;display:none}
 .auth-btn.busy .spin{display:block}
-.auth-btn.busy .btn-lbl{opacity:.75}
 @keyframes rot{to{transform:rotate(360deg)}}
 .user-card{display:none;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px}
 .user-card.show{display:flex}
 .user-av{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.user-name{font-size:11px;font-weight:500;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-nm{font-size:11px;font-weight:500;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .user-org{font-size:9px;color:var(--fg3)}
-.sync-row{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.sync-row{display:flex;align-items:center;justify-content:space-between;margin-top:2px;display:none}
+.sync-row.show{display:flex}
 .sync-time{font-size:9px;color:var(--fg3)}
-.sync-btn{font-size:10px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:3px;font-family:var(--sans)}
-.sync-btn:hover{background:var(--ab)}
-.sync-btn:disabled{color:var(--fg3);cursor:not-allowed}
-
+.sync-btn{font-size:10px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:3px}
+.sync-btn:hover{background:#eff6ff}
 /* ── Main ── */
 #content{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 #topbar{background:var(--hdr2);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.topbar-l{display:flex;align-items:center;gap:12px}
-#view-title-hdr{color:#e2e8f0;font-size:15px;font-weight:700;letter-spacing:-.2px}
+.topbar-l{display:flex;align-items:center;gap:10px}
+#vt-hdr{color:#e2e8f0;font-size:15px;font-weight:700}
 .src-chip{font-size:10px;background:rgba(255,255,255,.1);color:#93c5fd;padding:3px 9px;border-radius:20px;display:none}
 .src-chip.show{display:inline}
-.topbar-r{display:flex;align-items:center;gap:8px}
-#topbar-user{font-size:11px;color:#64748b;display:none}
-#topbar-user.show{display:block}
-
+#tu{font-size:11px;color:#64748b;display:none}
+#tu.show{display:block}
 /* ── Banners ── */
 .banner{margin:8px 24px 0;padding:9px 14px;border-radius:var(--radius);font-size:12px;display:none;align-items:center;gap:10px;border:1px solid}
 .banner.show{display:flex}
 .banner.err{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
 .banner.ok{background:#f0fdf4;border-color:#bbf7d0;color:#15803d}
-.banner-x{margin-left:auto;cursor:pointer;opacity:.5;font-size:14px}
-.banner-x:hover{opacity:1}
-
+.banner.info{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
+.bx{margin-left:auto;cursor:pointer;opacity:.5}
+.bx:hover{opacity:1}
 /* ── KPI cards ── */
 #cards{display:flex;gap:12px;padding:14px 24px;flex-shrink:0}
 .card{flex:1;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
@@ -117,36 +82,22 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--f
 .card-lbl{font-size:10px;font-weight:700;color:var(--fg3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:5px}
 .card-val{font-size:26px;font-weight:700;font-family:var(--mono);line-height:1}
 .card-sub{font-size:10px;color:var(--fg3);margin-top:3px}
-
 /* ── View bar ── */
 #view-bar{display:flex;align-items:center;justify-content:space-between;padding:2px 24px 10px;flex-shrink:0}
-#view-title{font-size:12px;font-weight:700;color:var(--fg);letter-spacing:.5px}
+#vt{font-size:12px;font-weight:700;color:var(--fg);letter-spacing:.5px}
 #legend{display:flex;gap:6px}
 .lpill{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
-
-/* ── View hosts ── */
+/* ── Hosts ── */
 #chart-host{flex:1;background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin:0 24px 18px;padding:18px;overflow:auto;display:none}
 #html-host{flex:1;background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin:0 24px 18px;overflow:auto;display:none}
 .chart-container{position:relative;height:400px;padding:6px}
-
-/* ── Welcome / sign-in screen ── */
-.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:0;text-align:center;padding:40px}
-.welcome-icon{font-size:56px;margin-bottom:20px}
-.welcome-title{font-size:18px;font-weight:700;color:var(--fg);margin-bottom:8px}
-.welcome-sub{font-size:13px;color:var(--fg2);line-height:1.6;max-width:340px;margin-bottom:28px}
-.welcome-signin{display:inline-flex;align-items:center;gap:10px;padding:13px 28px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:background .15s;box-shadow:0 4px 14px rgba(37,99,235,.35)}
-.welcome-signin:hover{background:var(--accent2)}
-.welcome-signin .spin{border-top-color:#fff;width:16px;height:16px}
-.ms-logo{width:18px;height:18px;flex-shrink:0}
-.welcome-note{font-size:11px;color:var(--fg3);margin-top:14px}
-
-/* ── Heatmap ── */
+/* ── Tables ── */
 .hm-wrap{overflow:auto;padding:8px}
 table.hm{border-collapse:separate;border-spacing:2px;font-size:11px;font-family:var(--mono)}
 table.hm .mo-row th{background:var(--hdr);color:#7dd3fc;padding:4px 3px;font-size:8px;font-weight:700;text-align:center}
-table.hm .mo-row th.aor-th{text-align:left;min-width:200px;padding-left:12px;color:#93c5fd}
+table.hm .mo-row th.at{text-align:left;min-width:200px;padding-left:12px;color:#93c5fd}
 table.hm .cw-row th{background:var(--hdr);color:#93c5fd;padding:5px 4px;font-size:9px;font-weight:700;text-align:center;white-space:nowrap}
-table.hm .cw-row th.aor-th{text-align:left;padding-left:12px}
+table.hm .cw-row th.at{text-align:left;padding-left:12px}
 table.hm .sys-row td{background:var(--sys-bg);color:var(--sys-fg);font-weight:700;font-size:11px;padding:6px 12px;font-family:var(--sans)}
 table.hm .dr td{padding:2px}
 table.hm .dr td.at{padding:2px 12px;font-size:11px;white-space:nowrap;color:var(--fg2);font-family:var(--sans)}
@@ -155,7 +106,6 @@ table.hm .dr:nth-child(odd) td{background:var(--surface2)}
 .sc{display:block;border-radius:4px;padding:3px 2px;min-width:36px;text-align:center;font-weight:600;font-size:10px}
 .sg{background:#dcfce7;color:#15803d}.sw{background:#fef3c7;color:#b45309}
 .sr{background:#fee2e2;color:#b91c1c}.sn{background:var(--border);color:var(--fg3)}
-
 /* ── WoW ── */
 .wow-wrap{padding:8px;overflow:auto}
 table.wow{border-collapse:separate;border-spacing:2px;font-size:11px;width:100%}
@@ -169,7 +119,6 @@ table.wow .wr:nth-child(odd) td{background:var(--surface2)}
 .dp{display:inline-block;border-radius:8px;padding:3px 10px;font-size:10px;font-weight:700;font-family:var(--mono);white-space:nowrap;width:100%;text-align:center}
 .du{background:#dcfce7;color:#15803d}.dd{background:#fee2e2;color:#b91c1c}
 .de{background:#f1f5f9;color:#64748b}.dn{background:transparent;color:#cbd5e1}
-
 /* ── Sparklines ── */
 .spk-wrap{overflow:auto;padding:8px}
 table.spk{border-collapse:separate;border-spacing:2px;font-size:11px;width:100%}
@@ -182,129 +131,98 @@ table.spk .sr2 td.sac.ir{font-weight:700;color:var(--fg);border-left:3px solid v
 table.spk .sr2:nth-child(odd) td{background:var(--surface2)}
 .sbadge{display:inline-block;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;font-family:var(--mono)}
 .strend{display:inline-block;font-size:15px;font-weight:700}
-
-/* ── Loading overlay ── */
+/* ── Overlay ── */
 #overlay{position:fixed;inset:0;background:rgba(15,23,42,.8);display:none;align-items:center;justify-content:center;z-index:200;flex-direction:column}
 #overlay.show{display:flex}
 .ov-box{background:#fff;border-radius:12px;padding:36px 52px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.35)}
 .ov-spin{width:44px;height:44px;border:4px solid #e2e8f0;border-top-color:var(--accent);border-radius:50%;animation:rot .8s linear infinite;margin:0 auto 18px}
 .ov-t{font-size:15px;font-weight:600;color:var(--fg);margin-bottom:5px}
 .ov-s{font-size:12px;color:var(--fg3)}
-
+/* ── Welcome ── */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px}
+.welcome-icon{font-size:56px;margin-bottom:20px}
+.welcome-title{font-size:18px;font-weight:700;color:var(--fg);margin-bottom:8px}
+.welcome-sub{font-size:13px;color:var(--fg2);line-height:1.6;max-width:360px;margin-bottom:28px}
+.welcome-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 28px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);box-shadow:0 4px 14px rgba(37,99,235,.35)}
+.welcome-btn:hover{background:var(--accent2)}
+.ms-logo{width:18px;height:18px;flex-shrink:0}
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:var(--border)}
 ::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:3px}
 </style>
 </head>
 <body>
-
-<!-- ══════════════════════ SIDEBAR ══════════════════════ -->
 <nav id="sidebar">
   <div class="sb-brand">
     <div class="sb-logo">🔒</div>
-    <div>
-      <div class="sb-brand-text">SecurityBridge</div>
-      <div class="sb-brand-sub">S&amp;C Tracker</div>
-    </div>
+    <div><div class="sb-brand-t">SecurityBridge</div><div class="sb-brand-s">S&amp;C Tracker</div></div>
   </div>
-
   <div class="sb-sec">Dashboards</div>
   <div id="nav-items"></div>
-
   <div class="sb-div"></div>
   <div class="sb-sec">Account</div>
-
   <div class="auth-area">
-    <!-- Signed-in user card (hidden until auth) -->
-    <div class="user-card" id="user-card">
-      <div class="user-av" id="user-av"></div>
-      <div style="overflow:hidden">
-        <div class="user-name" id="user-name-sb"></div>
-        <div class="user-org">Vestas · Microsoft 365</div>
-      </div>
+    <div class="user-card" id="uc">
+      <div class="user-av" id="uav"></div>
+      <div style="overflow:hidden"><div class="user-nm" id="unm"></div><div class="user-org">Vestas · M365</div></div>
     </div>
-
-    <!-- Main auth button -->
-    <button class="auth-btn primary" id="auth-btn" onclick="toggleAuth()">
-      <span class="spin" id="auth-spin"></span>
-      <span class="btn-lbl" id="auth-lbl">🔑 Sign in with Microsoft</span>
+    <button class="auth-btn primary" id="abtn" onclick="toggleAuth()">
+      <span class="spin" id="aspin"></span>
+      <span id="albl">🔑 Sign in with Microsoft</span>
     </button>
-
-    <!-- Sync row (shown after data loads) -->
-    <div class="sync-row" id="sync-row" style="display:none">
-      <span class="sync-time" id="sync-time"></span>
-      <button class="sync-btn" id="sync-btn" onclick="loadData()" title="Re-fetch from SharePoint">⟳ Sync</button>
+    <div class="sync-row" id="syncrow">
+      <span class="sync-time" id="synct"></span>
+      <button class="sync-btn" id="syncbtn" onclick="loadData()">⟳ Sync</button>
     </div>
   </div>
-
-  <div class="sb-div"></div>
-  <div class="sb-sec" id="data-sec" style="display:none">Filters</div>
-  <div class="sb-ctrl" id="filter-ctrl" style="display:none">
-    <span class="sb-lbl">Sheet / Year</span>
-    <select id="sheet-sel" onchange="onSheetChange()"><option>—</option></select>
+  <div class="sb-div" id="filtsep" style="display:none"></div>
+  <div class="sb-sec" id="filtsec" style="display:none">Filters</div>
+  <div class="sb-ctrl" id="filtctrl" style="display:none">
+    <span class="sb-lbl">Year</span>
+    <select id="yr-sel" onchange="onYearChange()"><option>All Years</option></select>
     <span class="sb-lbl">System</span>
-    <select id="system-sel" onchange="renderView()"><option>All Systems</option></select>
-    <div class="wk-row">
-      <span class="sb-lbl" style="margin:0">Weeks shown</span>
-      <span class="wk-val" id="wk-val">12</span>
-    </div>
-    <input type="range" id="wk-range" min="4" max="52" value="12"
-           oninput="cwLimit=+this.value;document.getElementById('wk-val').textContent=cwLimit;renderView()">
+    <select id="sys-sel" onchange="renderView()"><option>All Systems</option></select>
+    <div class="wk-row"><span class="sb-lbl" style="margin:0">Weeks shown</span><span class="wk-val" id="wkv">All</span></div>
+    <input type="range" id="wkr" min="4" max="52" value="52"
+           oninput="cwLimit=+this.value;document.getElementById('wkv').textContent=cwLimit;renderView()">
   </div>
 </nav>
 
-<!-- ══════════════════════ MAIN ══════════════════════════ -->
 <main id="content">
   <div id="topbar">
     <div class="topbar-l">
-      <span id="view-title-hdr">Dashboard</span>
-      <span class="src-chip" id="src-chip">📄 SecurityBridge S&amp;C Tracker.xlsx</span>
+      <span id="vt-hdr">Dashboard</span>
+      <span class="src-chip" id="sc2">📋 SharePoint · SB_Scores</span>
     </div>
-    <div class="topbar-r">
-      <span id="topbar-user"></span>
-    </div>
+    <span id="tu"></span>
   </div>
-
-  <div class="banner err" id="berr"><span id="berr-t"></span><span class="banner-x" onclick="this.parentElement.classList.remove('show')">✕</span></div>
-  <div class="banner ok"  id="bok"><span id="bok-t"></span><span class="banner-x" onclick="this.parentElement.classList.remove('show')">✕</span></div>
-
+  <div class="banner err" id="berr"><span id="berrt"></span><span class="bx" onclick="this.parentElement.classList.remove('show')">✕</span></div>
+  <div class="banner ok"  id="bok"><span id="bokt"></span><span class="bx" onclick="this.parentElement.classList.remove('show')">✕</span></div>
+  <div class="banner info" id="binfo"><span id="binfot"></span><span class="bx" onclick="this.parentElement.classList.remove('show')">✕</span></div>
   <div id="cards">
     <div class="card"><div class="card-bar" style="background:#3b82f6"></div><div class="card-body"><div class="card-lbl">Overall Rating</div><div class="card-val" id="k1" style="color:#3b82f6">--</div><div class="card-sub">Latest week avg</div></div></div>
     <div class="card"><div class="card-bar" style="background:#10b981"></div><div class="card-body"><div class="card-lbl">Avg AoR Score</div><div class="card-val" id="k2" style="color:#10b981">--</div><div class="card-sub" id="k2s">--</div></div></div>
     <div class="card"><div class="card-bar" style="background:#ef4444"></div><div class="card-body"><div class="card-lbl">Critical Areas</div><div class="card-val" id="k3" style="color:#ef4444">--</div><div class="card-sub">Score ≤ 34</div></div></div>
     <div class="card"><div class="card-bar" style="background:#16a34a"></div><div class="card-body"><div class="card-lbl">Strong Areas</div><div class="card-val" id="k4" style="color:#16a34a">--</div><div class="card-sub">Score ≥ 61</div></div></div>
   </div>
-
-  <div id="view-bar">
-    <span id="view-title"></span>
-    <div id="legend"></div>
-  </div>
-
+  <div id="view-bar"><span id="vt"></span><div id="legend"></div></div>
   <div id="chart-host"><div class="chart-container"><canvas id="mc"></canvas></div></div>
   <div id="html-host"></div>
 </main>
 
-<!-- Loading overlay -->
-<div id="overlay">
-  <div class="ov-box">
-    <div class="ov-spin"></div>
-    <div class="ov-t" id="ov-t">Loading…</div>
-    <div class="ov-s" id="ov-s">Please wait</div>
-  </div>
-</div>
+<div id="overlay"><div class="ov-box"><div class="ov-spin"></div><div class="ov-t" id="ovt">Loading…</div><div class="ov-s" id="ovs">Please wait</div></div></div>
 
 <script>
-// ════════════════════════════════════════════════════════
-//  ⚙️  PASTE YOUR TWO IDs HERE  — nothing else to change
-// ════════════════════════════════════════════════════════
-const CLIENT_ID = '2d62ed1b-5160-47c6-a26e-005e8f62006c';   // Azure App → Application (client) ID
-const TENANT_ID = 'c0701940-7b3f-4116-a59f-159078bc3c63';   // Azure AD  → Directory  (tenant) ID
 
-// ── SharePoint file (already wired to your exact file) ──
+const CLIENT_ID = '2d62ed1b-5160-47c6-a26e-005e8f62006c';
+const TENANT_ID = 'c0701940-7b3f-4116-a59f-159078bc3c63';
+
+// SharePoint List config
 const SP_HOST    = 'vestas.sharepoint.com';
 const SP_SITE    = '/sites/DEP-IT-ISRMDashboard-005_SAPSECURITYHARDENING';
-const SP_FILE_ID = 'CA3E0C68-D96B-4B5F-B3FA-7A3BC137B215';
+const SP_LIST    = 'SB_Scores';
 const SCOPES     = ['Sites.Read.All','Files.Read.All','User.Read'];
+const GRAPH      = 'https://graph.microsoft.com/v1.0';
 
 // ════════════════════════════════════════════════════════
 //  MSAL
@@ -312,250 +230,222 @@ const SCOPES     = ['Sites.Read.All','Files.Read.All','User.Read'];
 let msal_app = null;
 try {
   msal_app = new msal.PublicClientApplication({
-    auth: {
-      clientId: CLIENT_ID,
-      authority: `https://login.microsoftonline.com/${TENANT_ID}`,
-      redirectUri: window.location.href.split('?')[0].split('#')[0],
-    },
+    auth: { clientId:CLIENT_ID, authority:`https://login.microsoftonline.com/${TENANT_ID}`,
+            redirectUri:window.location.href.split('?')[0].split('#')[0] },
     cache: { cacheLocation:'sessionStorage' },
   });
-} catch(e){ console.warn('MSAL init skipped — IDs not set yet'); }
+} catch(e){ console.warn('MSAL init skipped'); }
 
 // ════════════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════════════
-let account = null, wb = null;
-let allBlocks = [], allColumns = [], activeView = 'heatmap', cwLimit = 12;
-let chartInst = null;
+let account=null, allBlocks=[], allColumns=[], activeView='heatmap', cwLimit=52;
+let chartInst=null, allItems=[], filteredYear='All Years';
 
-const VIEWS = [
-  {key:'heatmap', label:'Score Heatmap',      icon:'▒'},
-  {key:'trend',   label:'Trend Lines',         icon:'📈'},
-  {key:'weakest', label:'Weakest AoRs',        icon:'⚠'},
-  {key:'crit',    label:'Critical by System',  icon:'■'},
-  {key:'wow',     label:'Week-over-Week Δ',    icon:'#'},
-  {key:'spark',   label:'Sparklines',          icon:'∿'},
+const VIEWS=[
+  {key:'heatmap',label:'Score Heatmap',icon:'▒'},
+  {key:'trend',  label:'Trend Lines',  icon:'📈'},
+  {key:'weakest',label:'Weakest AoRs', icon:'⚠'},
+  {key:'crit',   label:'Critical by System',icon:'■'},
+  {key:'wow',    label:'Week-over-Week Δ',icon:'#'},
+  {key:'spark',  label:'Sparklines',   icon:'∿'},
 ];
-const CC = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16','#f97316','#0ea5e9','#6366f1','#14b8a6','#eab308','#f43f5e','#a855f7'];
+const CC=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16','#f97316','#0ea5e9','#6366f1','#14b8a6','#eab308','#f43f5e','#a855f7'];
 
 // ════════════════════════════════════════════════════════
 //  AUTH
 // ════════════════════════════════════════════════════════
 async function init(){
-  if(!msal_app){ showWelcome(); return; }
+  if(!msal_app){showWelcome();return;}
   try{
     await msal_app.handleRedirectPromise();
-    const accounts = msal_app.getAllAccounts();
-    if(accounts.length){
-      account = accounts[0];
-      onSignedIn();
-      await loadData();        // ← auto-load on page open if already signed in
-    } else {
-      showWelcome();
-    }
-  } catch(e){ showWelcome(); err(e.message); }
+    const accs=msal_app.getAllAccounts();
+    if(accs.length){account=accs[0];onSignedIn();await loadData();}
+    else showWelcome();
+  }catch(e){showWelcome();showErr(e.message);}
 }
-
-async function toggleAuth(){
-  if(account){ doSignOut(); return; }
-  await doSignIn();
-}
-
+async function toggleAuth(){if(account)doSignOut();else await doSignIn();}
 async function doSignIn(){
-  if(!msal_app){
-    err('Set CLIENT_ID and TENANT_ID in the source code first.');
-    return;
-  }
+  if(!msal_app){showErr('Set CLIENT_ID and TENANT_ID first.');return;}
   setBusy(true);
-  try{
-    const r = await msal_app.loginPopup({scopes:SCOPES, prompt:'select_account'});
-    account = r.account;
-    onSignedIn();
-    await loadData();          // ← auto-load immediately after sign-in
-  } catch(e){
-    if(!e.message.includes('user_cancelled')) err('Sign-in failed: '+e.message);
-    setBusy(false);
-  }
+  try{const r=await msal_app.loginPopup({scopes:SCOPES,prompt:'select_account'});account=r.account;onSignedIn();await loadData();}
+  catch(e){if(!e.message.includes('user_cancelled'))showErr('Sign-in failed: '+e.message);setBusy(false);}
 }
-
-function doSignOut(){
-  msal_app.logoutPopup({account}).then(()=>{
-    account=null; wb=null; allBlocks=[]; allColumns=[];
-    onSignedOut();
-    showWelcome();
-  });
-}
-
+function doSignOut(){msal_app.logoutPopup({account}).then(()=>{account=null;allBlocks=[];allColumns=[];allItems=[];onSignedOut();showWelcome();});}
 async function getToken(){
-  try{
-    const r = await msal_app.acquireTokenSilent({scopes:SCOPES,account});
-    return r.accessToken;
-  } catch{
-    const r = await msal_app.acquireTokenPopup({scopes:SCOPES});
-    return r.accessToken;
-  }
+  try{const r=await msal_app.acquireTokenSilent({scopes:SCOPES,account});return r.accessToken;}
+  catch{const r=await msal_app.acquireTokenPopup({scopes:SCOPES});return r.accessToken;}
 }
-
 function onSignedIn(){
-  const name = account.name || account.username;
-  const ini  = name.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
-  // Sidebar
-  document.getElementById('user-card').classList.add('show');
-  document.getElementById('user-av').textContent    = ini;
-  document.getElementById('user-name-sb').textContent = name;
-  document.getElementById('auth-btn').className     = 'auth-btn danger';
-  document.getElementById('auth-lbl').textContent   = '🚪 Sign out';
-  // Topbar
-  document.getElementById('topbar-user').textContent = name;
-  document.getElementById('topbar-user').classList.add('show');
+  const n=account.name||account.username;
+  const i=n.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('uc').classList.add('show');
+  document.getElementById('uav').textContent=i;
+  document.getElementById('unm').textContent=n;
+  document.getElementById('abtn').className='auth-btn danger';
+  document.getElementById('albl').textContent='🚪 Sign out';
+  document.getElementById('tu').textContent=n;
+  document.getElementById('tu').classList.add('show');
   setBusy(false);
 }
-
 function onSignedOut(){
-  document.getElementById('user-card').classList.remove('show');
-  document.getElementById('auth-btn').className    = 'auth-btn primary';
-  document.getElementById('auth-lbl').textContent  = '🔑 Sign in with Microsoft';
-  document.getElementById('topbar-user').classList.remove('show');
-  document.getElementById('sync-row').style.display='none';
-  document.getElementById('src-chip').classList.remove('show');
-  document.getElementById('data-sec').style.display='none';
-  document.getElementById('filter-ctrl').style.display='none';
-  document.getElementById('k1').textContent=document.getElementById('k2').textContent=
-    document.getElementById('k3').textContent=document.getElementById('k4').textContent='--';
+  document.getElementById('uc').classList.remove('show');
+  document.getElementById('abtn').className='auth-btn primary';
+  document.getElementById('albl').textContent='🔑 Sign in with Microsoft';
+  document.getElementById('tu').classList.remove('show');
+  document.getElementById('syncrow').classList.remove('show');
+  document.getElementById('sc2').classList.remove('show');
+  document.getElementById('filtsep').style.display='none';
+  document.getElementById('filtsec').style.display='none';
+  document.getElementById('filtctrl').style.display='none';
+  ['k1','k2','k3','k4'].forEach(id=>document.getElementById(id).textContent='--');
 }
-
-function setBusy(on){
-  const btn=document.getElementById('auth-btn');
-  const sp =document.getElementById('auth-spin');
-  if(on){btn.disabled=true;btn.classList.add('busy');sp.style.display='block';}
-  else  {btn.disabled=false;btn.classList.remove('busy');sp.style.display='none';}
-}
+function setBusy(on){const b=document.getElementById('abtn'),s=document.getElementById('aspin');if(on){b.disabled=true;b.classList.add('busy');s.style.display='block';}else{b.disabled=false;b.classList.remove('busy');s.style.display='none';}}
 
 // ════════════════════════════════════════════════════════
-//  DATA LOADING FROM SHAREPOINT
+//  LOAD DATA FROM SHAREPOINT LIST
 // ════════════════════════════════════════════════════════
 async function loadData(){
-  overlay('Connecting to SharePoint…','Authenticating with Microsoft 365');
+  overlay('Connecting to SharePoint…','Loading score history');
   try{
-    const token = await getToken();
+    const token=await getToken();
 
-    // 1. Get site ID
-    overlay('Fetching site…', SP_HOST+SP_SITE);
-    const site = await gget(`https://graph.microsoft.com/v1.0/sites/${SP_HOST}:${SP_SITE}`, token);
+    // Get site
+    overlay('Fetching data…','Reading SB_Scores list');
+    const siteR=await fetch(`${GRAPH}/sites/${SP_HOST}:${SP_SITE}`,{headers:{Authorization:`Bearer ${token}`}});
+    if(!siteR.ok)throw new Error(`Site fetch failed: ${siteR.status}`);
+    const site=await siteR.json();
 
-    // 2. Download the Excel file binary
-    overlay('Downloading Excel…','SecurityBridge S&C Tracker.xlsx');
-    const fileUrl = `https://graph.microsoft.com/v1.0/sites/${site.id}/drive/items/${SP_FILE_ID}/content`;
-    const res = await fetch(fileUrl,{headers:{Authorization:`Bearer ${token}`}});
-    if(!res.ok) throw new Error(`Download failed (${res.status}). Check API permissions and file ID.`);
+    // Get list
+    const listR=await fetch(`${GRAPH}/sites/${site.id}/lists?$filter=displayName eq '${SP_LIST}'`,{headers:{Authorization:`Bearer ${token}`}});
+    const listD=await listR.json();
+    if(!listD.value?.length)throw new Error(`List "${SP_LIST}" not found. Run the import script first.`);
+    const listId=listD.value[0].id;
 
-    // 3. Parse workbook
-    overlay('Parsing workbook…','Reading sheets and scores');
-    const buf = await res.arrayBuffer();
-    wb = XLSX.read(buf,{type:'array'});
+    // Fetch ALL items with pagination
+    overlay('Loading history…','Fetching all weekly scores');
+    let items=[],nextLink=`${GRAPH}/sites/${site.id}/lists/${listId}/items?$expand=fields&$top=999`;
+    while(nextLink){
+      const r=await fetch(nextLink,{headers:{Authorization:`Bearer ${token}`}});
+      if(!r.ok)throw new Error(`Items fetch failed: ${r.status}`);
+      const d=await r.json();
+      items=[...items,...(d.value||[])];
+      nextLink=d['@odata.nextLink']||null;
+    }
 
-    // 4. Populate sheet selector
-    const sheets = wb.SheetNames.filter(s=>s.toUpperCase()!=='TEMP');
-    const sel = document.getElementById('sheet-sel');
-    sel.innerHTML = sheets.map(s=>`<option>${s}</option>`).join('');
-    const def = sheets[sheets.length-1];   // most recent year last
-    sel.value = def;
+    allItems=items.map(i=>({
+      system: i.fields.System||'',
+      aor:    i.fields.AoR||'',
+      score:  parseFloat(i.fields.Score)||0,
+      week:   i.fields.Week||'',
+      year:   parseInt(i.fields.Year)||0,
+    })).filter(i=>i.system&&i.aor&&i.week&&i.year);
 
-    // 5. Show controls
-    document.getElementById('data-sec').style.display='block';
-    document.getElementById('filter-ctrl').style.display='block';
-    document.getElementById('src-chip').classList.add('show');
-    document.getElementById('sync-row').style.display='flex';
-    document.getElementById('sync-time').textContent='Updated '+new Date().toLocaleTimeString();
-    document.getElementById('sync-btn').disabled=false;
+    // Show filters
+    document.getElementById('filtsep').style.display='block';
+    document.getElementById('filtsec').style.display='block';
+    document.getElementById('filtctrl').style.display='block';
+    document.getElementById('sc2').classList.add('show');
+    document.getElementById('syncrow').classList.add('show');
+    document.getElementById('synct').textContent='Updated '+new Date().toLocaleTimeString();
 
-    applySheet(def);
+    // Populate year selector
+    const years=[...new Set(allItems.map(i=>i.year))].sort((a,b)=>b-a);
+    const yrSel=document.getElementById('yr-sel');
+    yrSel.innerHTML='<option>All Years</option>'+years.map(y=>`<option>${y}</option>`).join('');
+
+    buildBlocks();
     hideOverlay();
-    ok(`✅ Loaded ${sheets.length} sheet(s) · ${allBlocks.length} system(s) found`);
-
-  } catch(e){
-    hideOverlay();
-    err('❌ '+e.message);
-    console.error(e);
-  }
+    showOk(`✅ Loaded ${allItems.length} score records across ${years.length} year(s)`);
+  }catch(e){hideOverlay();showErr('❌ '+e.message);console.error(e);}
 }
 
-async function gget(url,token){
-  const r = await fetch(url,{headers:{Authorization:`Bearer ${token}`,Accept:'application/json'}});
-  if(!r.ok) throw new Error(`Graph error ${r.status} on ${url}`);
-  return r.json();
-}
-
-function onSheetChange(){
-  const s=document.getElementById('sheet-sel').value;
-  if(wb && s!=='—') applySheet(s);
-}
-
-function applySheet(name){
-  const ws = wb.Sheets[name];
-  const d2 = XLSX.utils.sheet_to_json(ws,{header:1,defval:null});
-  const {blocks,columns} = parseSheet(d2);
-  allBlocks=blocks; allColumns=columns;
-  cwLimit=columns.length;
-  const rng=document.getElementById('wk-range');
-  rng.max=Math.max(columns.length,4); rng.value=columns.length;
-  document.getElementById('wk-val').textContent=columns.length;
-  const ss=document.getElementById('system-sel');
-  ss.innerHTML=['All Systems',...blocks.map(b=>b.system)].map(s=>`<option>${s}</option>`).join('');
-  ss.value='All Systems';
-  updateCards(); renderView();
+function onYearChange(){
+  filteredYear=document.getElementById('yr-sel').value;
+  buildBlocks();
 }
 
 // ════════════════════════════════════════════════════════
-//  EXCEL PARSER
+//  BUILD BLOCKS (data structure for views)
 // ════════════════════════════════════════════════════════
-function parseSheet(d2){
-  let cwR=null;
-  for(let i=0;i<Math.min(5,d2.length);i++){
-    if(d2[i].slice(2,12).some(v=>v&&String(v).trim().startsWith('CW'))){cwR=i;break;}
-  }
-  if(cwR==null||cwR===0) throw new Error('Could not detect CW header row');
-  const moRow=d2[cwR-1]||[], cwRow=d2[cwR];
-  const cols=[]; let cm='';
-  for(let ci=2;ci<cwRow.length;ci++){
-    const cw=cwRow[ci]!=null?String(cwRow[ci]).trim():null;
-    const mo=moRow[ci]!=null?String(moRow[ci]).trim():null;
-    if(mo&&mo!=='nan'&&mo!=='undefined') cm=mo;
-    if(cw&&cw.startsWith('CW')) cols.push({cw,month:cm,ci});
-  }
-  const blocks=[]; let cs=null;
-  for(let ri=cwR+1;ri<d2.length;ri++){
-    const row=d2[ri];
-    const sv=row[0]!=null?String(row[0]).trim():null;
-    const av=row[1]!=null?String(row[1]).trim():null;
-    if(sv&&sv!=='nan') cs=sv.replace(/\n/g,' ');
-    if(!av||av==='nan'||!cs) continue;
-    const scores=cols.map(c=>{const f=parseFloat(row[c.ci]);return isNaN(f)?null:f;});
-    if(!blocks.length||blocks[blocks.length-1].system!==cs) blocks.push({system:cs,rows:[]});
-    blocks[blocks.length-1].rows.push({
-      aor:av.replace(/«|»/g,'').trim(),
-      scores,
-      isRating:av.toUpperCase().includes('RATING'),
-    });
-  }
-  return {blocks,columns:cols};
+function buildBlocks(){
+  // Filter by year
+  const items=filteredYear==='All Years'?allItems:allItems.filter(i=>i.year===parseInt(filteredYear));
+
+  // Get all unique weeks sorted
+  const weekSet=new Set(items.map(i=>i.week));
+  const weeks=[...weekSet].sort((a,b)=>{
+    // Sort by year then CW number
+    const itemsA=items.filter(i=>i.week===a);
+    const itemsB=items.filter(i=>i.week===b);
+    const yearA=Math.max(...itemsA.map(i=>i.year));
+    const yearB=Math.max(...itemsB.map(i=>i.year));
+    if(yearA!==yearB)return yearA-yearB;
+    return parseInt(a.replace('CW',''))-parseInt(b.replace('CW',''));
+  });
+
+  allColumns=weeks.map(w=>{
+    const yr=Math.max(...items.filter(i=>i.week===w).map(i=>i.year));
+    return {cw:w,year:yr,month:cwToMonth(w)};
+  });
+
+  // Set weeks slider max
+  const rng=document.getElementById('wkr');
+  rng.max=weeks.length;rng.value=weeks.length;
+  cwLimit=weeks.length;
+  document.getElementById('wkv').textContent=weeks.length;
+
+  // Build blocks grouped by system
+  const sysMap={};
+  items.forEach(item=>{
+    if(!sysMap[item.system])sysMap[item.system]={};
+    if(!sysMap[item.system][item.aor])sysMap[item.system][item.aor]={};
+    sysMap[item.system][item.aor][item.week]=item.score;
+  });
+
+  allBlocks=Object.entries(sysMap).map(([sys,aors])=>({
+    system:sys,
+    rows:Object.entries(aors).map(([aor,weekScores])=>({
+      aor,
+      isRating:aor==='RATING',
+      scores:weeks.map(w=>weekScores[w]!==undefined?weekScores[w]:null),
+    })),
+  }));
+
+  // Populate system selector
+  const ss=document.getElementById('sys-sel');
+  ss.innerHTML='<option>All Systems</option>'+allBlocks.map(b=>`<option>${b.system}</option>`).join('');
+
+  updateCards();
+  renderView();
+}
+
+function cwToMonth(cw){
+  const n=parseInt(cw.replace('CW',''));
+  const months=['','JAN','JAN','JAN','JAN','JAN','FEB','FEB','FEB','FEB',
+    'MAR','MAR','MAR','MAR','APR','APR','APR','APR','MAY','MAY','MAY','MAY',
+    'JUN','JUN','JUN','JUN','JUL','JUL','JUL','JUL','JUL','AUG','AUG','AUG',
+    'AUG','SEP','SEP','SEP','SEP','SEP','OCT','OCT','OCT','OCT','NOV','NOV',
+    'NOV','NOV','DEC','DEC','DEC','DEC','DEC'];
+  return months[n]||'';
 }
 
 // ════════════════════════════════════════════════════════
 //  HELPERS
 // ════════════════════════════════════════════════════════
 const iv=v=>v!=null&&v!==''&&!isNaN(parseFloat(v));
-function lv(a){for(let i=a.length-1;i>=0;i--) if(iv(a[i]))return parseFloat(a[i]);return null;}
+function lv(a){for(let i=a.length-1;i>=0;i--)if(iv(a[i]))return parseFloat(a[i]);return null;}
 function sc(v){
-  if(!iv(v)) return {bg:'#e2e8f0',fg:'#94a3b8',cl:'sn'};
+  if(!iv(v))return{bg:'#e2e8f0',fg:'#94a3b8',cl:'sn'};
   const f=parseFloat(v);
-  if(f>=61) return {bg:'#dcfce7',fg:'#15803d',cl:'sg',hex:'#16a34a'};
-  if(f>=35) return {bg:'#fef3c7',fg:'#b45309',cl:'sw',hex:'#d97706'};
-  return           {bg:'#fee2e2',fg:'#b91c1c',cl:'sr',hex:'#dc2626'};
+  if(f>=61)return{bg:'#dcfce7',fg:'#15803d',cl:'sg',hex:'#16a34a'};
+  if(f>=35)return{bg:'#fef3c7',fg:'#b45309',cl:'sw',hex:'#d97706'};
+  return{bg:'#fee2e2',fg:'#b91c1c',cl:'sr',hex:'#dc2626'};
 }
-function gb(){const s=document.getElementById('system-sel').value;return s==='All Systems'?allBlocks:allBlocks.filter(b=>b.system===s);}
+function gb(){const s=document.getElementById('sys-sel').value;return s==='All Systems'?allBlocks:allBlocks.filter(b=>b.system===s);}
 function gc(){return allColumns.slice(0,cwLimit);}
 function es(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
 function latS(){const d={};for(const b of allBlocks)for(const r of b.rows){if(r.isRating)continue;const v=lv(r.scores);if(v!==null){if(!d[r.aor])d[r.aor]=[];d[r.aor].push(v);}}const o={};for(const[a,vs]of Object.entries(d))o[a]=vs.reduce((a,b)=>a+b,0)/vs.length;return o;}
 function ovAvg(){const vs=[];for(const b of allBlocks)for(const r of b.rows)if(r.isRating){const v=lv(r.scores);if(v!==null)vs.push(v);}return vs.length?Math.round(vs.reduce((a,b)=>a+b,0)/vs.length):null;}
 
@@ -583,7 +473,7 @@ function buildNav(){
     activeView=item.dataset.key;
     el.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
     item.classList.add('active');
-    document.getElementById('view-title-hdr').textContent=VIEWS.find(v=>v.key===activeView).label;
+    document.getElementById('vt-hdr').textContent=VIEWS.find(v=>v.key===activeView).label;
     renderView();
   }));
 }
@@ -596,36 +486,22 @@ function renderView(){
   document.getElementById('chart-host').style.display='none';
   document.getElementById('html-host').style.display='none';
   if(chartInst){chartInst.destroy();chartInst=null;}
-  const vt=VIEWS.find(v=>v.key===activeView)?.label||'';
-  document.getElementById('view-title').textContent=vt.toUpperCase();
-  switch(activeView){
-    case 'heatmap': vHeatmap(); break;
-    case 'trend':   vTrend();   break;
-    case 'weakest': vWeakest(); break;
-    case 'crit':    vCrit();    break;
-    case 'wow':     vWow();     break;
-    case 'spark':   vSpark();   break;
-  }
+  document.getElementById('vt').textContent=VIEWS.find(v=>v.key===activeView)?.label?.toUpperCase()||'';
+  switch(activeView){case 'heatmap':vHeatmap();break;case 'trend':vTrend();break;case 'weakest':vWeakest();break;case 'crit':vCrit();break;case 'wow':vWow();break;case 'spark':vSpark();break;}
 }
 function sHtml(h){const el=document.getElementById('html-host');el.style.display='block';el.innerHTML=h;}
-function sChart(){
-  document.getElementById('chart-host').style.display='block';
-  const o=document.getElementById('mc');if(o)o.remove();
-  const c=document.createElement('canvas');c.id='mc';
-  document.querySelector('.chart-container').appendChild(c);
-}
+function sChart(){document.getElementById('chart-host').style.display='block';const o=document.getElementById('mc');if(o)o.remove();const c=document.createElement('canvas');c.id='mc';document.querySelector('.chart-container').appendChild(c);}
 function showWelcome(){
-  const h=document.getElementById('html-host');
-  h.style.display='block';
+  const h=document.getElementById('html-host');h.style.display='block';
   h.innerHTML=`<div class="welcome">
     <div class="welcome-icon">🛡️</div>
     <div class="welcome-title">SecurityBridge S&amp;C Tracker</div>
-    <div class="welcome-sub">Sign in with your Vestas Microsoft 365 account to automatically load the latest security scores from SharePoint.</div>
-    <button class="welcome-signin" onclick="doSignIn()">
+    <div class="welcome-sub">Sign in with your Vestas Microsoft 365 account to load all historical security scores from SharePoint automatically.</div>
+    <button class="welcome-btn" onclick="doSignIn()">
       <svg class="ms-logo" viewBox="0 0 21 21" fill="none"><rect width="10" height="10" fill="#f25022"/><rect x="11" width="10" height="10" fill="#7fba00"/><rect y="11" width="10" height="10" fill="#00a4ef"/><rect x="11" y="11" width="10" height="10" fill="#ffb900"/></svg>
       Sign in with Microsoft
     </button>
-    <div class="welcome-note">Your data is fetched directly from SharePoint — nothing is stored locally.</div>
+    <div style="font-size:11px;color:var(--fg3);margin-top:14px">Shows CW01 onwards — full history from SharePoint</div>
   </div>`;
 }
 
@@ -634,18 +510,24 @@ function showWelcome(){
 // ════════════════════════════════════════════════════════
 function vHeatmap(){
   setLeg([['#16a34a','#fff','Good 61–100'],['#d97706','#fff','Warning 35–60'],['#dc2626','#fff','Critical ≤34']]);
-  const blocks=gb(),cols=gc(),allSys=document.getElementById('system-sel').value==='All Systems';
+  const blocks=gb(),cols=gc(),allSys=document.getElementById('sys-sel').value==='All Systems';
+  // Build month groups
   const mg=[];let cm=null,ms=0;
   for(let i=0;i<cols.length;i++){if(cols[i].month!==cm){if(cm!==null)mg.push({mo:cm,s:ms,e:i-1});cm=cols[i].month;ms=i;}}
   if(cm!==null)mg.push({mo:cm,s:ms,e:cols.length-1});
+  // Add year to month label if multi-year
+  const multiYear=[...new Set(cols.map(c=>c.year))].length>1;
   let h=`<div class="hm-wrap"><table class="hm"><thead>
-  <tr class="mo-row"><th class="aor-th">Area of Responsibility</th>`;
-  for(const{mo,s,e}of mg) h+=`<th colspan="${e-s+1}" style="border-left:2px solid #1e3a5f">${mo||''}</th>`;
-  h+=`</tr><tr class="cw-row"><th class="aor-th"></th>`;
+  <tr class="mo-row"><th class="at">Area of Responsibility</th>`;
+  mg.forEach(({mo,s,e})=>{
+    const yr=cols[s]?.year||'';
+    h+=`<th colspan="${e-s+1}" style="border-left:2px solid #1e3a5f">${mo||''}${multiYear?' '+yr:''}</th>`;
+  });
+  h+=`</tr><tr class="cw-row"><th class="at"></th>`;
   for(let i=0;i<cols.length;i++){const bl=i>0&&cols[i].month!==cols[i-1].month?'border-left:2px solid #334155':'';h+=`<th style="${bl}">${cols[i].cw}</th>`;}
   h+=`</tr></thead><tbody>`;
   for(const b of blocks){
-    if(allSys) h+=`<tr class="sys-row"><td colspan="${cols.length+1}">▸  ${es(b.system)}</td></tr>`;
+    if(allSys)h+=`<tr class="sys-row"><td colspan="${cols.length+1}">▸  ${es(b.system)}</td></tr>`;
     for(const r of b.rows){
       h+=`<tr class="dr"><td class="at${r.isRating?' ir':''}">${es(r.aor)}</td>`;
       for(let ci=0;ci<cols.length;ci++){
@@ -664,19 +546,19 @@ function vHeatmap(){
 // ════════════════════════════════════════════════════════
 function vTrend(){
   setLeg([['#fff1f2','#dc2626','Critical zone'],['#fffbeb','#d97706','Warning zone']]);
-  const blocks=gb(),cols=gc(),allSys=document.getElementById('system-sel').value==='All Systems';
+  const blocks=gb(),cols=gc(),allSys=document.getElementById('sys-sel').value==='All Systems';
   const labels=cols.map(c=>c.cw);let series=[];
   if(allSys){
     const acc={};for(const b of blocks)for(const r of b.rows){if(r.isRating)continue;if(!acc[r.aor])acc[r.aor]=[];acc[r.aor].push(r.scores);}
     for(const[a,sls]of Object.entries(acc)){const pts=cols.map((_,i)=>{const vs=sls.map(sl=>i<sl.length&&iv(sl[i])?parseFloat(sl[i]):null).filter(v=>v!==null);return vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null;});if(pts.some(v=>v!==null))series.push({label:a,data:pts});}
-  } else {
-    for(const b of blocks)for(const r of b.rows){if(r.isRating)continue;const pts=cols.map((_,i)=>i<r.scores.length&&iv(r.scores[i])?parseFloat(r.scores[i]):null);if(pts.some(v=>v!==null))series.push({label:r.aor,data:pts});}
-  }
+  }else{for(const b of blocks)for(const r of b.rows){if(r.isRating)continue;const pts=cols.map((_,i)=>i<r.scores.length&&iv(r.scores[i])?parseFloat(r.scores[i]):null);if(pts.some(v=>v!==null))series.push({label:r.aor,data:pts});}}
   if(!series.length){sHtml('<div style="padding:60px;text-align:center;color:var(--fg3)">No data</div>');return;}
   sChart();
   chartInst=new Chart(document.getElementById('mc').getContext('2d'),{
-    type:'line',data:{labels,datasets:series.map((s,i)=>({label:s.label,data:s.data,borderColor:CC[i%CC.length],backgroundColor:CC[i%CC.length]+'22',pointRadius:3,pointHoverRadius:6,borderWidth:2,tension:0.3,spanGaps:true}))},
-    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'nearest',intersect:false},plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:12,font:{size:10},padding:14}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y!==null?Math.round(c.parsed.y):'—'}`}}},scales:{y:{min:0,max:100,grid:{color:'#e2e8f0'},ticks:{font:{size:10}}},x:{grid:{display:false},ticks:{font:{size:9},maxRotation:45}}}}
+    type:'line',data:{labels,datasets:series.map((s,i)=>({label:s.label,data:s.data,borderColor:CC[i%CC.length],backgroundColor:CC[i%CC.length]+'22',pointRadius:2,pointHoverRadius:5,borderWidth:2,tension:0.3,spanGaps:true}))},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'nearest',intersect:false},
+      plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:12,font:{size:10},padding:14}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y!==null?Math.round(c.parsed.y):'—'}`}}},
+      scales:{y:{min:0,max:100,grid:{color:'#e2e8f0'},ticks:{font:{size:10}}},x:{grid:{display:false},ticks:{font:{size:9},maxRotation:45,autoSkip:true,maxTicksLimit:20}}}}
   });
 }
 
@@ -684,7 +566,7 @@ function vTrend(){
 //  VIEW 3 — WEAKEST
 // ════════════════════════════════════════════════════════
 function vWeakest(){
-  const sel=document.getElementById('system-sel').value,allSys=sel==='All Systems';
+  const sel=document.getElementById('sys-sel').value,allSys=sel==='All Systems';
   setLeg([['#16a34a','#fff','Good 61+'],['#d97706','#fff','Warning 35–60'],['#dc2626','#fff','Critical ≤34']]);
   const blocks=gb();let data=[];
   if(allSys){const acc={};for(const b of blocks)for(const r of b.rows){if(r.isRating)continue;const v=lv(r.scores);if(v===null)continue;if(!acc[r.aor])acc[r.aor]=[];acc[r.aor].push(v);}for(const[a,vs]of Object.entries(acc))data.push({aor:a,score:vs.reduce((a,b)=>a+b,0)/vs.length});}
@@ -699,7 +581,7 @@ function vWeakest(){
 }
 
 // ════════════════════════════════════════════════════════
-//  VIEW 4 — CRITICAL BY SYSTEM
+//  VIEW 4 — CRITICAL
 // ════════════════════════════════════════════════════════
 function vCrit(){
   setLeg([['#16a34a','#fff','Good (61+)'],['#d97706','#fff','Warning (35–60)'],['#dc2626','#fff','Critical (≤34)']]);
@@ -718,7 +600,7 @@ function vCrit(){
 // ════════════════════════════════════════════════════════
 function vWow(){
   setLeg([['#dcfce7','#15803d','▲ Improved'],['#fee2e2','#b91c1c','▼ Declined'],['#f1f5f9','#64748b','● No change']]);
-  const blocks=gb(),cols=gc(),allSys=document.getElementById('system-sel').value==='All Systems';
+  const blocks=gb(),cols=gc(),allSys=document.getElementById('sys-sel').value==='All Systems';
   let dc=[];for(let i=1;i<cols.length;i++)dc.push({p:cols[i-1],c:cols[i]});
   dc=dc.slice(-Math.min(8,dc.length));
   if(!dc.length){sHtml('<div style="padding:60px;text-align:center;color:var(--fg3)">Need at least 2 weeks</div>');return;}
@@ -746,7 +628,7 @@ function vWow(){
 // ════════════════════════════════════════════════════════
 function vSpark(){
   setLeg([['#16a34a','#fff','Good'],['#d97706','#fff','Warning'],['#dc2626','#fff','Critical']]);
-  const blocks=gb(),cols=gc(),allSys=document.getElementById('system-sel').value==='All Systems';
+  const blocks=gb(),cols=gc(),allSys=document.getElementById('sys-sel').value==='All Systems';
   const SW=180,SH=28;
   let h=`<div class="spk-wrap"><table class="spk"><thead><tr><th class="sa">Area of Responsibility</th><th style="min-width:${SW}px">Sparkline</th><th>Last 4wk</th><th>Latest</th><th>Trend</th><th>Δ 2wk</th></tr></thead><tbody>`;
   for(const b of blocks){
@@ -762,16 +644,7 @@ function vSpark(){
       const l4W=l4.length*15;
       const l4s=`<svg width="${l4W}" height="26" viewBox="0 0 ${l4W} 26">${l4.map((v,i)=>{const c=sc(v);const ht=Math.max(2,Math.round((v/100)*22));return `<g transform="translate(${i*15},0)"><rect x="0" y="${24-ht}" width="12" height="${ht}" rx="2" fill="${c.hex||c.bg}"/></g>`;}).join('')}</svg>`;
       let svg=`<svg width="${SW}" height="${SH}" viewBox="0 0 ${SW} ${SH}">`;
-      if(vpts.length>=2){
-        const xr=Math.max(vpts[vpts.length-1].x-vpts[0].x,1);
-        const pts=vpts.map(p=>({px:(((p.x-vpts[0].x)/xr)*(SW-8))+4,py:SH-4-((p.y/100)*(SH-8))}));
-        const lc=vpts[vpts.length-1].y>=61?'#16a34a':vpts[vpts.length-1].y>=35?'#d97706':'#dc2626';
-        svg+=`<polygon points="${pts[0].px},${SH-2} ${pts.map(p=>`${p.px},${p.py}`).join(' ')} ${pts[pts.length-1].px},${SH-2}" fill="${lc}22"/>`;
-        svg+=`<path d="M ${pts.map(p=>`${p.px},${p.py}`).join(' L ')}" fill="none" stroke="${lc}" stroke-width="1.5" stroke-linejoin="round"/>`;
-        const ys=vpts.map(p=>p.y),maxY=Math.max(...ys),minY=Math.min(...ys);
-        pts.forEach((p,i)=>{if(vpts[i].y===maxY||vpts[i].y===minY)svg+=`<circle cx="${p.px}" cy="${p.py}" r="3" fill="white" stroke="${lc}" stroke-width="1.5"/>`;});
-        const lp=pts[pts.length-1];svg+=`<circle cx="${lp.px}" cy="${lp.py}" r="3" fill="${lc}"/>`;
-      }
+      if(vpts.length>=2){const xr=Math.max(vpts[vpts.length-1].x-vpts[0].x,1);const pts=vpts.map(p=>({px:(((p.x-vpts[0].x)/xr)*(SW-8))+4,py:SH-4-((p.y/100)*(SH-8))}));const lc=vpts[vpts.length-1].y>=61?'#16a34a':vpts[vpts.length-1].y>=35?'#d97706':'#dc2626';svg+=`<polygon points="${pts[0].px},${SH-2} ${pts.map(p=>`${p.px},${p.py}`).join(' ')} ${pts[pts.length-1].px},${SH-2}" fill="${lc}22"/>`;svg+=`<path d="M ${pts.map(p=>`${p.px},${p.py}`).join(' L ')}" fill="none" stroke="${lc}" stroke-width="1.5" stroke-linejoin="round"/>`;const ys=vpts.map(p=>p.y),maxY=Math.max(...ys),minY=Math.min(...ys);pts.forEach((p,i)=>{if(vpts[i].y===maxY||vpts[i].y===minY)svg+=`<circle cx="${p.px}" cy="${p.py}" r="3" fill="white" stroke="${lc}" stroke-width="1.5"/>`;});const lp=pts[pts.length-1];svg+=`<circle cx="${lp.px}" cy="${lp.py}" r="3" fill="${lc}"/>`;}
       svg+=`</svg>`;
       h+=`<tr class="sr2"><td class="sac${r.isRating?' ir':''}">${es(r.aor)}</td><td>${svg}</td><td>${l4s}</td><td><span class="sbadge" style="background:${s2.bg};color:${s2.fg}">${latest!==null?Math.round(latest):'—'}</span></td><td style="text-align:center">${tr}</td><td style="text-align:center">${dp}</td></tr>`;
     }
@@ -780,19 +653,20 @@ function vSpark(){
 }
 
 // ════════════════════════════════════════════════════════
-//  UI UTILS
+//  UI
 // ════════════════════════════════════════════════════════
-function overlay(t,s){document.getElementById('ov-t').textContent=t;document.getElementById('ov-s').textContent=s;document.getElementById('overlay').classList.add('show');}
+function overlay(t,s){document.getElementById('ovt').textContent=t;document.getElementById('ovs').textContent=s;document.getElementById('overlay').classList.add('show');}
 function hideOverlay(){document.getElementById('overlay').classList.remove('show');}
-function err(m){const e=document.getElementById('berr');document.getElementById('berr-t').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),10000);}
-function ok(m){const e=document.getElementById('bok');document.getElementById('bok-t').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),6000);}
+function showErr(m){const e=document.getElementById('berr');document.getElementById('berrt').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),12000);}
+function showOk(m){const e=document.getElementById('bok');document.getElementById('bokt').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),6000);}
+function showInfo(m){const e=document.getElementById('binfo');document.getElementById('binfot').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),8000);}
 
 // ════════════════════════════════════════════════════════
 //  BOOT
 // ════════════════════════════════════════════════════════
 buildNav();
 showWelcome();
-init();   // ← checks for cached session and auto-loads if already signed in
+init();
 </script>
 </body>
 </html>
