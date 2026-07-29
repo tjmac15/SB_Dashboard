@@ -21,7 +21,7 @@
   --radius:6px;--sw:220px;
   --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
 }
-html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--fg);font-size:14px;overflow:hidden;display:flex}
+html,body{width:100%;min-width:100%;height:100%;font-family:var(--sans);background:var(--bg);color:var(--fg);font-size:14px;overflow:hidden;display:flex}
 /* ── Sidebar ── */
 #sidebar{width:var(--sw);min-width:var(--sw);height:100vh;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
 .sb-brand{display:flex;align-items:center;gap:8px;padding:18px 16px 14px;border-bottom:1px solid var(--border)}
@@ -61,7 +61,7 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--f
 .sync-btn{font-size:10px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:3px}
 .sync-btn:hover{background:#eff6ff}
 /* ── Main ── */
-#content{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#content{flex:1;width:calc(100vw - var(--sw));display:flex;flex-direction:column;overflow:hidden;min-width:0}
 #topbar{background:var(--hdr2);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .topbar-l{display:flex;align-items:center;gap:10px}
 #vt-hdr{color:#e2e8f0;font-size:15px;font-weight:700}
@@ -94,6 +94,16 @@ html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--f
 #chart-host{flex:1;background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin:0 24px 18px;padding:18px;overflow:auto;display:none}
 #html-host{flex:1;background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin:0 24px 18px;overflow:auto;display:none}
 .chart-container{position:relative;height:400px;padding:6px}
+/* Heatmap detail view */
+.heatmap-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;min-height:100%;height:100%}
+.heatmap-main{min-width:0;display:flex;flex-direction:column}.heatmap-toolbar{display:flex;align-items:end;justify-content:space-between;gap:14px;padding:16px 18px 8px;border-bottom:1px solid var(--border)}
+.heatmap-toolbar label{display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:700;color:var(--fg2);letter-spacing:.5px;text-transform:uppercase}.heatmap-toolbar select{min-width:240px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:7px 9px;color:var(--fg);font:inherit;font-size:12px}
+.heatmap-hint{font-size:11px;color:var(--fg3);padding-bottom:7px}.heatmap-main .hm-wrap{flex:1}
+.rating-summary{padding:18px;border-left:1px solid var(--border);background:var(--surface2);overflow:auto}.rating-summary h3{font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:var(--fg2);margin-bottom:15px}
+.rating-score{padding:18px 14px;border-radius:var(--radius);text-align:center;margin-bottom:14px}.rating-score.good{background:#dcfce7;color:#15803d}.rating-score.warning{background:#fef3c7;color:#b45309}.rating-score.critical{background:#fee2e2;color:#b91c1c}.rating-score.empty{background:#e2e8f0;color:#64748b}
+.rating-score .score{font-family:var(--mono);font-size:48px;line-height:1;font-weight:700}.rating-score .label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-top:6px}
+.rating-counts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:17px}.rating-count{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:8px;text-align:center}.rating-count strong{display:block;font:700 20px/1 var(--mono)}.rating-count span{font-size:9px;color:var(--fg3);text-transform:uppercase}.rating-count.critical strong{color:#dc2626}.rating-count.warning strong{color:#d97706}.rating-count.good strong{color:#16a34a}
+.rating-list-title{font-size:10px;font-weight:700;color:var(--fg2);text-transform:uppercase;letter-spacing:.6px;margin:4px 0 7px}.rating-list{list-style:none}.rating-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--fg2)}.rating-list li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rating-pill{font:700 10px var(--mono);min-width:30px;text-align:center;padding:3px 5px;border-radius:4px}.rating-pill.good{background:#dcfce7;color:#15803d}.rating-pill.warning{background:#fef3c7;color:#b45309}.rating-pill.critical{background:#fee2e2;color:#b91c1c}.rating-pill.empty{background:#e2e8f0;color:#64748b}
 /* ── Tables ── */
 .hm-wrap{overflow:auto;padding:8px}
 table.hm{border-collapse:separate;border-spacing:2px;font-size:11px;font-family:var(--mono)}
@@ -158,10 +168,10 @@ table.spk .sr2:nth-child(odd) td{background:var(--surface2)}
   .sb-brand{padding:12px 16px}.sb-sec{padding-top:10px}
   #nav-items{display:flex;overflow-x:auto;padding:0 8px}.nav-item{width:auto;flex:0 0 auto;margin:1px 2px;padding:8px 10px}
   .nav-icon{width:auto}.auth-area{padding-bottom:10px}.sb-ctrl{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.sb-ctrl .wk-row,.sb-ctrl input[type=range]{grid-column:1 / -1}
-  #content{min-height:calc(100vh - 1px);overflow:visible}#topbar{height:auto;min-height:52px;padding:12px 16px}.src-chip{display:none!important}
+  #content{width:100%;min-height:calc(100vh - 1px);overflow:visible}#topbar{height:auto;min-height:52px;padding:12px 16px}.src-chip{display:none!important}
   #cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px}.card-body{padding:11px 12px}.card-val{font-size:22px}
   #view-bar{padding:2px 16px 10px;gap:8px;align-items:flex-start;flex-direction:column}#legend{flex-wrap:wrap}
-  #chart-host,#html-host{margin:0 16px 16px}.chart-container{height:340px;padding:2px}.welcome{padding:32px 20px}
+  #chart-host,#html-host{margin:0 16px 16px}.chart-container{height:340px;padding:2px}.welcome{padding:32px 20px}.heatmap-layout{grid-template-columns:1fr}.rating-summary{border-left:0;border-top:1px solid var(--border)}.heatmap-toolbar{align-items:stretch;flex-direction:column}.heatmap-toolbar select{min-width:0;width:100%}
 }
 </style>
 </head>
@@ -407,9 +417,9 @@ function buildBlocks(){
     const [yearA,weekA]=a.split('|'),[yearB,weekB]=b.split('|');
     return Number(yearA)-Number(yearB)||Number(weekA.replace(/\D/g,''))-Number(weekB.replace(/\D/g,''));
   });
-  allColumns=periods.map(period=>{
+  allColumns=periods.map((period,index)=>{
     const [year,cw]=period.split('|');
-    return {cw,year:Number(year),month:cwToMonth(cw),period};
+    return {cw,year:Number(year),month:cwToMonth(cw),period,index};
   });
 
   // Set weeks slider max
@@ -536,9 +546,9 @@ function showWelcome(){
 // ════════════════════════════════════════════════════════
 function vOverview(){
   const cols=gc(),blocks=gb();
-  const posture=cols.map((_,index)=>{
-    const ratings=blocks.flatMap(block=>block.rows.filter(row=>row.isRating).map(row=>row.scores[index])).filter(iv).map(Number);
-    const fallback=blocks.flatMap(block=>block.rows.filter(row=>!row.isRating).map(row=>row.scores[index])).filter(iv).map(Number);
+  const posture=cols.map(column=>{
+    const ratings=blocks.flatMap(block=>block.rows.filter(row=>row.isRating).map(row=>row.scores[column.index])).filter(iv).map(Number);
+    const fallback=blocks.flatMap(block=>block.rows.filter(row=>!row.isRating).map(row=>row.scores[column.index])).filter(iv).map(Number);
     const values=ratings.length?ratings:fallback;
     return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:null;
   });
@@ -550,16 +560,23 @@ function vOverview(){
   });
 }
 
+function setHeatmapSystem(system){
+  document.getElementById('sys-sel').value=system;
+  renderView();
+}
 function vHeatmap(){
   setLeg([['#16a34a','#fff','Good 61–100'],['#d97706','#fff','Warning 35–60'],['#dc2626','#fff','Critical ≤34']]);
-  const blocks=gb(),cols=gc(),allSys=document.getElementById('sys-sel').value==='All Systems';
+  const systemControl=document.getElementById('sys-sel');
+  if(systemControl.value==='All Systems'&&allBlocks.length)systemControl.value=allBlocks[0].system;
+  const block=allBlocks.find(item=>item.system===systemControl.value),cols=gc();
+  if(!block){sHtml('<div style="padding:60px;text-align:center;color:var(--fg3)">No system data</div>');return;}
   // Build month groups
   const mg=[];let cm=null,ms=0;
   for(let i=0;i<cols.length;i++){if(cols[i].month!==cm){if(cm!==null)mg.push({mo:cm,s:ms,e:i-1});cm=cols[i].month;ms=i;}}
   if(cm!==null)mg.push({mo:cm,s:ms,e:cols.length-1});
   // Add year to month label if multi-year
   const multiYear=[...new Set(cols.map(c=>c.year))].length>1;
-  let h=`<div class="hm-wrap"><table class="hm"><thead>
+  let h=`<div class="heatmap-layout"><section class="heatmap-main"><div class="heatmap-toolbar"><label for="heatmap-system">System<select id="heatmap-system" onchange="setHeatmapSystem(this.value)">${allBlocks.map(item=>`<option value="${es(item.system)}"${item.system===block.system?' selected':''}>${es(item.system)}</option>`).join('')}</select></label><span class="heatmap-hint">Weekly score history for the selected system</span></div><div class="hm-wrap"><table class="hm"><thead>
   <tr class="mo-row"><th class="at">Area of Responsibility</th>`;
   mg.forEach(({mo,s,e})=>{
     const yr=cols[s]?.year||'';
@@ -568,19 +585,22 @@ function vHeatmap(){
   h+=`</tr><tr class="cw-row"><th class="at"></th>`;
   for(let i=0;i<cols.length;i++){const bl=i>0&&cols[i].month!==cols[i-1].month?'border-left:2px solid #334155':'';h+=`<th style="${bl}">${cols[i].cw}</th>`;}
   h+=`</tr></thead><tbody>`;
-  for(const b of blocks){
-    if(allSys)h+=`<tr class="sys-row"><td colspan="${cols.length+1}">▸  ${es(b.system)}</td></tr>`;
-    for(const r of b.rows){
+    for(const r of block.rows){
       h+=`<tr class="dr"><td class="at${r.isRating?' ir':''}">${es(r.aor)}</td>`;
       for(let ci=0;ci<cols.length;ci++){
-        const v=ci<r.scores.length?r.scores[ci]:null;
+        const v=r.scores[cols[ci].index]??null;
         const s2=sc(v);const bl=ci>0&&cols[ci].month!==cols[ci-1].month?'border-left:2px solid #e2e8f0':'';
         h+=`<td style="${bl}"><span class="sc ${s2.cl}">${iv(v)?Math.round(v):'—'}</span></td>`;
       }
       h+=`</tr>`;
     }
-  }
-  sHtml(h+`</tbody></table></div>`);
+  const ratingRow=block.rows.find(row=>row.isRating),rating=ratingRow?lv(ratingRow.scores):null;
+  const tone=rating===null?'empty':rating>=61?'good':rating>=35?'warning':'critical';
+  const aors=block.rows.filter(row=>!row.isRating).map(row=>({name:row.aor,score:lv(row.scores)}));
+  const good=aors.filter(item=>item.score!==null&&item.score>=61).length,warning=aors.filter(item=>item.score!==null&&item.score>=35&&item.score<61).length,critical=aors.filter(item=>item.score!==null&&item.score<35).length;
+  const list=aors.sort((a,b)=>(a.score??101)-(b.score??101)).map(item=>{const itemTone=item.score===null?'empty':item.score>=61?'good':item.score>=35?'warning':'critical';return `<li><span>${es(item.name)}</span><span class="rating-pill ${itemTone}">${item.score===null?'—':Math.round(item.score)}</span></li>`;}).join('');
+  h+=`</tbody></table></div></section><aside class="rating-summary"><h3>Latest rating summary</h3><div class="rating-score ${tone}"><div class="score">${rating===null?'—':Math.round(rating)}</div><div class="label">Overall rating</div></div><div class="rating-counts"><div class="rating-count critical"><strong>${critical}</strong><span>Critical</span></div><div class="rating-count warning"><strong>${warning}</strong><span>Warning</span></div><div class="rating-count good"><strong>${good}</strong><span>Good</span></div></div><div class="rating-list-title">Latest AoR scores</div><ul class="rating-list">${list||'<li>No Area of Responsibility scores</li>'}</ul></aside></div>`;
+  sHtml(h);
 }
 
 // ════════════════════════════════════════════════════════
