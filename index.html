@@ -78,21 +78,22 @@ html,body{width:100%;min-width:100%;height:100%;font-family:var(--sans);backgrou
 .bx{margin-left:auto;cursor:pointer;opacity:.5}
 .bx:hover{opacity:1}
 /* ── KPI cards ── */
-#cards{display:flex;gap:12px;padding:14px 24px;flex-shrink:0}
+#cards{display:flex;gap:10px;padding:10px 24px 8px;flex-shrink:0}
 .card{flex:1;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .card-bar{height:3px}
-.card-body{padding:13px 15px}
-.card-lbl{font-size:10px;font-weight:700;color:var(--fg3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:5px}
-.card-val{font-size:26px;font-weight:700;font-family:var(--mono);line-height:1}
+.card-body{padding:10px 13px}
+.card-lbl{font-size:10px;font-weight:700;color:var(--fg3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:4px}
+.card-val{font-size:24px;font-weight:700;font-family:var(--mono);line-height:1}
 .card-sub{font-size:10px;color:var(--fg3);margin-top:3px}
 /* ── View bar ── */
-#view-bar{display:flex;align-items:center;justify-content:space-between;padding:2px 24px 10px;flex-shrink:0}
+#view-bar{display:flex;align-items:center;justify-content:space-between;padding:2px 24px 6px;flex-shrink:0}
 #vt{font-size:12px;font-weight:700;color:var(--fg);letter-spacing:.5px}
 #legend{display:flex;gap:6px}
 .lpill{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
 /* ── Hosts ── */
 #chart-host{flex:1;background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin:0 24px 18px;padding:18px;overflow:auto;display:none}
 #html-host{flex:1;background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin:0 24px 18px;overflow:auto;display:none}
+#html-host.flush{background:none;border:0;overflow:hidden;padding:0}
 .chart-container{position:relative;height:400px;padding:6px}
 /* Heatmap detail view */
 .heatmap-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;min-height:100%;height:100%}
@@ -104,6 +105,21 @@ html,body{width:100%;min-width:100%;height:100%;font-family:var(--sans);backgrou
 .rating-score .score{font-family:var(--mono);font-size:48px;line-height:1;font-weight:700}.rating-score .label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-top:6px}
 .rating-counts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:17px}.rating-count{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:8px;text-align:center}.rating-count strong{display:block;font:700 20px/1 var(--mono)}.rating-count span{font-size:9px;color:var(--fg3);text-transform:uppercase}.rating-count.critical strong{color:#dc2626}.rating-count.warning strong{color:#d97706}.rating-count.good strong{color:#16a34a}
 .rating-list-title{font-size:10px;font-weight:700;color:var(--fg2);text-transform:uppercase;letter-spacing:.6px;margin:4px 0 7px}.rating-list{list-style:none}.rating-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--fg2)}.rating-list li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rating-pill{font:700 10px var(--mono);min-width:30px;text-align:center;padding:3px 5px;border-radius:4px}.rating-pill.good{background:#dcfce7;color:#15803d}.rating-pill.warning{background:#fef3c7;color:#b45309}.rating-pill.critical{background:#fee2e2;color:#b91c1c}.rating-pill.empty{background:#e2e8f0;color:#64748b}
+.rating-list.systems li{gap:10px}.sys-bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;min-width:0}.sys-bar-fill{height:100%;border-radius:3px}.sys-bar-name{flex:0 0 auto;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ── Merged Overview grid ── */
+.ov-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:minmax(320px,1.15fr) minmax(230px,1fr) minmax(230px,1fr);gap:10px;height:100%;min-height:0}
+.ov-heatmap{grid-column:1 / -1;grid-row:1;min-height:0}
+.ov-panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.ov-panel-hd{padding:9px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:10px}
+.ov-panel-hd h3{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--fg2)}
+.ov-panel-leg{display:flex;gap:5px;flex-shrink:0}
+.ov-chart{flex:1;position:relative;padding:8px 10px;min-height:0}
+.ov-chart canvas{width:100% !important;height:100% !important}
+.ov-heatmap .heatmap-layout{height:100%}
+.ov-heatmap .heatmap-toolbar{padding:9px 14px}
+.ws-stack{display:flex;flex-direction:column;gap:10px;height:100%;min-height:0}
+.ws-stack .ov-panel{flex:1;min-height:0}
+.ws-stack .wow-wrap,.ws-stack .spk-wrap{flex:1;overflow:auto;padding:6px}
 /* ── Tables ── */
 .hm-wrap{overflow:auto;padding:8px}
 table.hm{border-collapse:separate;border-spacing:2px;font-size:11px;font-family:var(--mono)}
@@ -274,16 +290,11 @@ try {
 //  STATE
 // ════════════════════════════════════════════════════════
 let account=null, allBlocks=[], allColumns=[], activeView='overview', cwLimit=52;
-let chartInst=null, allItems=[], filteredYear='All Years';
+let chartInsts=[], allItems=[], filteredYear='All Years';
 
 const VIEWS=[
-  {key:'overview',label:'Executive Overview',icon:'O'},
-  {key:'heatmap',label:'Score Heatmap',icon:'▒'},
-  {key:'trend',  label:'Trend Lines',  icon:'📈'},
-  {key:'weakest',label:'Weakest AoRs', icon:'⚠'},
-  {key:'crit',   label:'Critical by System',icon:'■'},
-  {key:'wow',    label:'Week-over-Week Δ',icon:'#'},
-  {key:'spark',  label:'Sparklines',   icon:'∿'},
+  {key:'overview',label:'Overview',icon:'▤'},
+  {key:'wowspark',label:'Week-over-Week & Sparklines',icon:'#'},
 ];
 const CC=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16','#f97316','#0ea5e9','#6366f1','#14b8a6','#eab308','#f43f5e','#a855f7'];
 
@@ -521,11 +532,14 @@ function renderView(){
   if(!allBlocks.length){showWelcome();return;}
   document.getElementById('chart-host').style.display='none';
   document.getElementById('html-host').style.display='none';
-  if(chartInst){chartInst.destroy();chartInst=null;}
+  document.getElementById('html-host').classList.remove('flush');
+  chartInsts.forEach(c=>{try{c.destroy();}catch(e){}});chartInsts=[];
   document.getElementById('vt').textContent=VIEWS.find(v=>v.key===activeView)?.label?.toUpperCase()||'';
-  switch(activeView){case 'overview':vOverview();break;case 'heatmap':vHeatmap();break;case 'trend':vTrend();break;case 'weakest':vWeakest();break;case 'crit':vCrit();break;case 'wow':vWow();break;case 'spark':vSpark();break;}
+  setLeg([]);
+  switch(activeView){case 'overview':vOverviewMega();break;case 'wowspark':vWowSpark();break;}
 }
 function sHtml(h){const el=document.getElementById('html-host');el.style.display='block';el.innerHTML=h;}
+function sHtmlFlush(h){const el=document.getElementById('html-host');el.style.display='block';el.classList.add('flush');el.innerHTML=h;}
 function sChart(){document.getElementById('chart-host').style.display='block';const o=document.getElementById('mc');if(o)o.remove();const c=document.createElement('canvas');c.id='mc';document.querySelector('.chart-container').appendChild(c);}
 function showWelcome(){
   const h=document.getElementById('html-host');h.style.display='block';
@@ -542,39 +556,38 @@ function showWelcome(){
 }
 
 // ════════════════════════════════════════════════════════
-//  VIEW 1 — HEATMAP
+//  RANKING — latest RATING per system (all systems)
 // ════════════════════════════════════════════════════════
-function vOverview(){
-  const cols=gc(),blocks=gb();
-  const posture=cols.map(column=>{
-    const ratings=blocks.flatMap(block=>block.rows.filter(row=>row.isRating).map(row=>row.scores[column.index])).filter(iv).map(Number);
-    const fallback=blocks.flatMap(block=>block.rows.filter(row=>!row.isRating).map(row=>row.scores[column.index])).filter(iv).map(Number);
-    const values=ratings.length?ratings:fallback;
-    return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:null;
-  });
-  sChart();
-  document.querySelector('.chart-container').style.height='280px';
-  chartInst=new Chart(document.getElementById('mc').getContext('2d'),{
-    type:'line',data:{labels:cols.map(column=>`${column.cw} ${column.year}`),datasets:[{label:'Overall security posture',data:posture,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.12)',fill:true,pointRadius:3,pointHoverRadius:5,borderWidth:2,tension:.3,spanGaps:true}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:context=>`Overall score: ${context.parsed.y===null?'—':Math.round(context.parsed.y)}`}}},scales:{y:{min:0,max:100,grid:{color:'#e2e8f0'},ticks:{font:{size:10}}},x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:true,maxTicksLimit:12}}}}
-  });
+function buildSystemRankHtml(){
+  const ranked=allBlocks.map(b=>{
+    const rr=b.rows.find(r=>r.isRating);
+    const v=rr?lv(rr.scores):null;
+    return {name:b.system,score:v};
+  }).sort((a,b)=>(b.score??-1)-(a.score??-1));
+  if(!ranked.length)return '<li>No systems loaded</li>';
+  return ranked.map(item=>{
+    const tone=item.score===null?'empty':item.score>=61?'good':item.score>=35?'warning':'critical';
+    const hex=item.score===null?'#94a3b8':item.score>=61?'#16a34a':item.score>=35?'#d97706':'#dc2626';
+    const pct=item.score===null?0:Math.max(2,Math.round(item.score));
+    return `<li><span class="sys-bar-name" title="${es(item.name)}">${es(item.name)}</span><span class="sys-bar-track"><span class="sys-bar-fill" style="width:${pct}%;background:${hex}"></span></span><span class="rating-pill ${tone}">${item.score===null?'—':Math.round(item.score)}</span></li>`;
+  }).join('');
 }
 
+// ════════════════════════════════════════════════════════
+//  HEATMAP PANEL (used inside merged Overview)
+// ════════════════════════════════════════════════════════
 function setHeatmapSystem(system){
   document.getElementById('sys-sel').value=system;
   renderView();
 }
-function vHeatmap(){
-  setLeg([['#16a34a','#fff','Good 61–100'],['#d97706','#fff','Warning 35–60'],['#dc2626','#fff','Critical ≤34']]);
+function buildHeatmapHtml(){
   const systemControl=document.getElementById('sys-sel');
   if(systemControl.value==='All Systems'&&allBlocks.length)systemControl.value=allBlocks[0].system;
   const block=allBlocks.find(item=>item.system===systemControl.value),cols=gc();
-  if(!block){sHtml('<div style="padding:60px;text-align:center;color:var(--fg3)">No system data</div>');return;}
-  // Build month groups
+  if(!block)return '<div style="padding:60px;text-align:center;color:var(--fg3)">No system data</div>';
   const mg=[];let cm=null,ms=0;
   for(let i=0;i<cols.length;i++){if(cols[i].month!==cm){if(cm!==null)mg.push({mo:cm,s:ms,e:i-1});cm=cols[i].month;ms=i;}}
   if(cm!==null)mg.push({mo:cm,s:ms,e:cols.length-1});
-  // Add year to month label if multi-year
   const multiYear=[...new Set(cols.map(c=>c.year))].length>1;
   let h=`<div class="heatmap-layout"><section class="heatmap-main"><div class="heatmap-toolbar"><label for="heatmap-system">System<select id="heatmap-system" onchange="setHeatmapSystem(this.value)">${allBlocks.map(item=>`<option value="${es(item.system)}"${item.system===block.system?' selected':''}>${es(item.system)}</option>`).join('')}</select></label><span class="heatmap-hint">Weekly score history for the selected system</span></div><div class="hm-wrap"><table class="hm"><thead>
   <tr class="mo-row"><th class="at">Area of Responsibility</th>`;
@@ -585,89 +598,105 @@ function vHeatmap(){
   h+=`</tr><tr class="cw-row"><th class="at"></th>`;
   for(let i=0;i<cols.length;i++){const bl=i>0&&cols[i].month!==cols[i-1].month?'border-left:2px solid #334155':'';h+=`<th style="${bl}">${cols[i].cw}</th>`;}
   h+=`</tr></thead><tbody>`;
-    for(const r of block.rows){
-      h+=`<tr class="dr"><td class="at${r.isRating?' ir':''}">${es(r.aor)}</td>`;
-      for(let ci=0;ci<cols.length;ci++){
-        const v=r.scores[cols[ci].index]??null;
-        const s2=sc(v);const bl=ci>0&&cols[ci].month!==cols[ci-1].month?'border-left:2px solid #e2e8f0':'';
-        h+=`<td style="${bl}"><span class="sc ${s2.cl}">${iv(v)?Math.round(v):'—'}</span></td>`;
-      }
-      h+=`</tr>`;
+  for(const r of block.rows){
+    h+=`<tr class="dr"><td class="at${r.isRating?' ir':''}">${es(r.aor)}</td>`;
+    for(let ci=0;ci<cols.length;ci++){
+      const v=r.scores[cols[ci].index]??null;
+      const s2=sc(v);const bl=ci>0&&cols[ci].month!==cols[ci-1].month?'border-left:2px solid #e2e8f0':'';
+      h+=`<td style="${bl}"><span class="sc ${s2.cl}">${iv(v)?Math.round(v):'—'}</span></td>`;
     }
+    h+=`</tr>`;
+  }
   const ratingRow=block.rows.find(row=>row.isRating),rating=ratingRow?lv(ratingRow.scores):null;
   const tone=rating===null?'empty':rating>=61?'good':rating>=35?'warning':'critical';
   const aors=block.rows.filter(row=>!row.isRating).map(row=>({name:row.aor,score:lv(row.scores)}));
   const good=aors.filter(item=>item.score!==null&&item.score>=61).length,warning=aors.filter(item=>item.score!==null&&item.score>=35&&item.score<61).length,critical=aors.filter(item=>item.score!==null&&item.score<35).length;
   const list=aors.sort((a,b)=>(a.score??101)-(b.score??101)).map(item=>{const itemTone=item.score===null?'empty':item.score>=61?'good':item.score>=35?'warning':'critical';return `<li><span>${es(item.name)}</span><span class="rating-pill ${itemTone}">${item.score===null?'—':Math.round(item.score)}</span></li>`;}).join('');
-  h+=`</tbody></table></div></section><aside class="rating-summary"><h3>Latest rating summary</h3><div class="rating-score ${tone}"><div class="score">${rating===null?'—':Math.round(rating)}</div><div class="label">Overall rating</div></div><div class="rating-counts"><div class="rating-count critical"><strong>${critical}</strong><span>Critical</span></div><div class="rating-count warning"><strong>${warning}</strong><span>Warning</span></div><div class="rating-count good"><strong>${good}</strong><span>Good</span></div></div><div class="rating-list-title">Latest AoR scores</div><ul class="rating-list">${list||'<li>No Area of Responsibility scores</li>'}</ul></aside></div>`;
-  sHtml(h);
+  h+=`</tbody></table></div></section><aside class="rating-summary"><h3>Latest rating summary</h3><div class="rating-score ${tone}"><div class="score">${rating===null?'—':Math.round(rating)}</div><div class="label">Overall rating — ${es(block.system)}</div></div><div class="rating-counts"><div class="rating-count critical"><strong>${critical}</strong><span>Critical</span></div><div class="rating-count warning"><strong>${warning}</strong><span>Warning</span></div><div class="rating-count good"><strong>${good}</strong><span>Good</span></div></div><div class="rating-list-title">Latest AoR scores</div><ul class="rating-list">${list||'<li>No Area of Responsibility scores</li>'}</ul><div class="rating-list-title">Latest rating by system</div><ul class="rating-list systems">${buildSystemRankHtml()}</ul></aside></div>`;
+  return h;
 }
 
 // ════════════════════════════════════════════════════════
-//  VIEW 2 — TREND
+//  CHART BUILDERS (targeted at a given canvas, for merged pages)
 // ════════════════════════════════════════════════════════
-function vTrend(){
-  setLeg([['#fff1f2','#dc2626','Critical zone'],['#fffbeb','#d97706','Warning zone']]);
+function buildPostureChart(canvas){
+  const cols=gc(),blocks=allBlocks;
+  const posture=cols.map(column=>{
+    const ratings=blocks.flatMap(block=>block.rows.filter(row=>row.isRating).map(row=>row.scores[column.index])).filter(iv).map(Number);
+    const fallback=blocks.flatMap(block=>block.rows.filter(row=>!row.isRating).map(row=>row.scores[column.index])).filter(iv).map(Number);
+    const values=ratings.length?ratings:fallback;
+    return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:null;
+  });
+  chartInsts.push(new Chart(canvas.getContext('2d'),{
+    type:'line',data:{labels:cols.map(column=>`${column.cw} ${column.year}`),datasets:[{label:'Overall security posture',data:posture,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.12)',fill:true,pointRadius:2,pointHoverRadius:5,borderWidth:2,tension:.3,spanGaps:true}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:context=>`Overall score: ${context.parsed.y===null?'—':Math.round(context.parsed.y)}`}}},scales:{y:{min:0,max:100,grid:{color:'#e2e8f0'},ticks:{font:{size:9}}},x:{grid:{display:false},ticks:{font:{size:8},maxRotation:0,autoSkip:true,maxTicksLimit:10}}}}
+  }));
+}
+function buildTrendChart(canvas){
   const blocks=gb(),cols=gc(),allSys=document.getElementById('sys-sel').value==='All Systems';
   const labels=cols.map(c=>c.cw);let series=[];
   if(allSys){
     const acc={};for(const b of blocks)for(const r of b.rows){if(r.isRating)continue;if(!acc[r.aor])acc[r.aor]=[];acc[r.aor].push(r.scores);}
     for(const[a,sls]of Object.entries(acc)){const pts=cols.map((_,i)=>{const vs=sls.map(sl=>i<sl.length&&iv(sl[i])?parseFloat(sl[i]):null).filter(v=>v!==null);return vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null;});if(pts.some(v=>v!==null))series.push({label:a,data:pts});}
   }else{for(const b of blocks)for(const r of b.rows){if(r.isRating)continue;const pts=cols.map((_,i)=>i<r.scores.length&&iv(r.scores[i])?parseFloat(r.scores[i]):null);if(pts.some(v=>v!==null))series.push({label:r.aor,data:pts});}}
-  if(!series.length){sHtml('<div style="padding:60px;text-align:center;color:var(--fg3)">No data</div>');return;}
-  sChart();
-  chartInst=new Chart(document.getElementById('mc').getContext('2d'),{
-    type:'line',data:{labels,datasets:series.map((s,i)=>({label:s.label,data:s.data,borderColor:CC[i%CC.length],backgroundColor:CC[i%CC.length]+'22',pointRadius:2,pointHoverRadius:5,borderWidth:2,tension:0.3,spanGaps:true}))},
+  if(!series.length)return;
+  chartInsts.push(new Chart(canvas.getContext('2d'),{
+    type:'line',data:{labels,datasets:series.map((s,i)=>({label:s.label,data:s.data,borderColor:CC[i%CC.length],backgroundColor:CC[i%CC.length]+'22',pointRadius:1,pointHoverRadius:4,borderWidth:1.5,tension:0.3,spanGaps:true}))},
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'nearest',intersect:false},
-      plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:12,font:{size:10},padding:14}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y!==null?Math.round(c.parsed.y):'—'}`}}},
-      scales:{y:{min:0,max:100,grid:{color:'#e2e8f0'},ticks:{font:{size:10}}},x:{grid:{display:false},ticks:{font:{size:9},maxRotation:45,autoSkip:true,maxTicksLimit:20}}}}
-  });
+      plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8},padding:6}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y!==null?Math.round(c.parsed.y):'—'}`}}},
+      scales:{y:{min:0,max:100,grid:{color:'#e2e8f0'},ticks:{font:{size:9}}},x:{grid:{display:false},ticks:{font:{size:8},maxRotation:45,autoSkip:true,maxTicksLimit:14}}}}
+  }));
 }
-
-// ════════════════════════════════════════════════════════
-//  VIEW 3 — WEAKEST
-// ════════════════════════════════════════════════════════
-function vWeakest(){
+function buildWeakestChart(canvas){
   const sel=document.getElementById('sys-sel').value,allSys=sel==='All Systems';
-  setLeg([['#16a34a','#fff','Good 61+'],['#d97706','#fff','Warning 35–60'],['#dc2626','#fff','Critical ≤34']]);
   const blocks=gb();let data=[];
   if(allSys){const acc={};for(const b of blocks)for(const r of b.rows){if(r.isRating)continue;const v=lv(r.scores);if(v===null)continue;if(!acc[r.aor])acc[r.aor]=[];acc[r.aor].push(v);}for(const[a,vs]of Object.entries(acc))data.push({aor:a,score:vs.reduce((a,b)=>a+b,0)/vs.length});}
   else{for(const b of blocks)for(const r of b.rows){if(r.isRating)continue;const v=lv(r.scores);if(v===null)continue;data.push({aor:r.aor,score:v});}}
-  data.sort((a,b)=>a.score-b.score);data=data.slice(0,20);
-  if(!data.length){sHtml('<div style="padding:60px;text-align:center;color:var(--fg3)">No data</div>');return;}
-  sChart();document.querySelector('.chart-container').style.height=Math.max(380,data.length*36+80)+'px';
-  chartInst=new Chart(document.getElementById('mc').getContext('2d'),{
-    type:'bar',data:{labels:data.map(d=>d.aor.length>38?d.aor.slice(0,38)+'…':d.aor),datasets:[{data:data.map(d=>Math.round(d.score)),backgroundColor:data.map(d=>d.score<=34?'#dc2626':d.score<=60?'#d97706':'#16a34a'),borderRadius:4}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`Score: ${c.parsed.x}`}}},scales:{x:{min:0,max:100,grid:{color:'#e2e8f0'},ticks:{font:{size:10}}},y:{grid:{display:false},ticks:{font:{size:11}}}}}
-  });
+  data.sort((a,b)=>a.score-b.score);data=data.slice(0,10);
+  if(!data.length)return;
+  chartInsts.push(new Chart(canvas.getContext('2d'),{
+    type:'bar',data:{labels:data.map(d=>d.aor.length>26?d.aor.slice(0,26)+'…':d.aor),datasets:[{data:data.map(d=>Math.round(d.score)),backgroundColor:data.map(d=>d.score<=34?'#dc2626':d.score<=60?'#d97706':'#16a34a'),borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`Score: ${c.parsed.x}`}}},scales:{x:{min:0,max:100,grid:{color:'#e2e8f0'},ticks:{font:{size:9}}},y:{grid:{display:false},ticks:{font:{size:10}}}}}
+  }));
 }
-
-// ════════════════════════════════════════════════════════
-//  VIEW 4 — CRITICAL
-// ════════════════════════════════════════════════════════
-function vCrit(){
-  setLeg([['#16a34a','#fff','Good (61+)'],['#d97706','#fff','Warning (35–60)'],['#dc2626','#fff','Critical (≤34)']]);
+function buildCritChart(canvas){
   const blocks=gb(),systems=[];
   for(const b of blocks){let g=0,w=0,c=0;for(const r of b.rows){if(r.isRating)continue;const v=lv(r.scores);if(v===null)continue;if(v>=61)g++;else if(v>=35)w++;else c++;}if(g+w+c>0)systems.push({name:b.system,g,w,c,t:g+w+c});}
-  if(!systems.length){sHtml('<div style="padding:60px;text-align:center;color:var(--fg3)">No data</div>');return;}
-  sChart();document.querySelector('.chart-container').style.height='420px';
-  chartInst=new Chart(document.getElementById('mc').getContext('2d'),{
-    type:'bar',data:{labels:systems.map(s=>s.name.length>14?s.name.slice(0,14)+'…':s.name),datasets:[{label:'Critical (≤34)',data:systems.map(s=>Math.round(s.c/s.t*100)),backgroundColor:'#dc2626',borderRadius:0},{label:'Warning (35–60)',data:systems.map(s=>Math.round(s.w/s.t*100)),backgroundColor:'#d97706',borderRadius:0},{label:'Good (61+)',data:systems.map(s=>Math.round(s.g/s.t*100)),backgroundColor:'#16a34a',borderRadius:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{boxWidth:12,font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y}%`}}},scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:10}}},y:{stacked:true,min:0,max:100,grid:{color:'#e2e8f0'},ticks:{callback:v=>v+'%',font:{size:10}}}}}
-  });
+  if(!systems.length)return;
+  chartInsts.push(new Chart(canvas.getContext('2d'),{
+    type:'bar',data:{labels:systems.map(s=>s.name.length>10?s.name.slice(0,10)+'…':s.name),datasets:[{label:'Critical (≤34)',data:systems.map(s=>Math.round(s.c/s.t*100)),backgroundColor:'#dc2626',borderRadius:0},{label:'Warning (35–60)',data:systems.map(s=>Math.round(s.w/s.t*100)),backgroundColor:'#d97706',borderRadius:0},{label:'Good (61+)',data:systems.map(s=>Math.round(s.g/s.t*100)),backgroundColor:'#16a34a',borderRadius:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{boxWidth:9,font:{size:9},padding:6}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y}%`}}},scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:8},maxRotation:45,autoSkip:true}},y:{stacked:true,min:0,max:100,grid:{color:'#e2e8f0'},ticks:{callback:v=>v+'%',font:{size:9}}}}}
+  }));
 }
 
 // ════════════════════════════════════════════════════════
-//  VIEW 5 — WOW
+//  MERGED VIEW — OVERVIEW (heatmap + posture + trend + weakest + critical)
 // ════════════════════════════════════════════════════════
-function vWow(){
-  setLeg([['#dcfce7','#15803d','▲ Improved'],['#fee2e2','#b91c1c','▼ Declined'],['#f1f5f9','#64748b','● No change']]);
+function vOverviewMega(){
+  const h=`<div class="ov-grid">
+    <section class="ov-panel ov-heatmap">${buildHeatmapHtml()}</section>
+    <section class="ov-panel"><div class="ov-panel-hd"><h3>Overall Posture Trend</h3></div><div class="ov-chart"><canvas id="ov-posture"></canvas></div></section>
+    <section class="ov-panel"><div class="ov-panel-hd"><h3>Trend Lines by AoR</h3><div class="ov-panel-leg"><span class="lpill" style="background:#fff1f2;color:#dc2626">Critical</span><span class="lpill" style="background:#fffbeb;color:#d97706">Warning</span></div></div><div class="ov-chart"><canvas id="ov-trend"></canvas></div></section>
+    <section class="ov-panel"><div class="ov-panel-hd"><h3>Weakest AoRs</h3></div><div class="ov-chart"><canvas id="ov-weakest"></canvas></div></section>
+    <section class="ov-panel"><div class="ov-panel-hd"><h3>Critical by System</h3></div><div class="ov-chart"><canvas id="ov-crit"></canvas></div></section>
+  </div>`;
+  sHtmlFlush(h);
+  buildPostureChart(document.getElementById('ov-posture'));
+  buildTrendChart(document.getElementById('ov-trend'));
+  buildWeakestChart(document.getElementById('ov-weakest'));
+  buildCritChart(document.getElementById('ov-crit'));
+}
+
+// ════════════════════════════════════════════════════════
+//  MERGED VIEW — WEEK-OVER-WEEK Δ + SPARKLINES
+// ════════════════════════════════════════════════════════
+function buildWowHtml(){
   const blocks=gb(),cols=gc(),allSys=document.getElementById('sys-sel').value==='All Systems';
   let dc=[];for(let i=1;i<cols.length;i++)dc.push({p:cols[i-1],c:cols[i]});
   dc=dc.slice(-Math.min(8,dc.length));
-  if(!dc.length){sHtml('<div style="padding:60px;text-align:center;color:var(--fg3)">Need at least 2 weeks</div>');return;}
+  if(!dc.length)return '<div style="padding:40px;text-align:center;color:var(--fg3)">Need at least 2 weeks</div>';
   const im=new Map();allColumns.forEach((c,i)=>im.set(c,i));
-  let h=`<div class="wow-wrap"><table class="wow"><thead><tr><th class="wa">Area of Responsibility</th>${dc.map(d=>`<th>${d.p.cw}→${d.c.cw}</th>`).join('')}</tr></thead><tbody>`;
+  let h=`<table class="wow"><thead><tr><th class="wa">Area of Responsibility</th>${dc.map(d=>`<th>${d.p.cw}→${d.c.cw}</th>`).join('')}</tr></thead><tbody>`;
   for(const b of blocks){
     if(allSys)h+=`<tr class="ws"><td colspan="${dc.length+1}">▸  ${es(b.system)}</td></tr>`;
     for(const r of b.rows){
@@ -682,17 +711,12 @@ function vWow(){
       h+=`</tr>`;
     }
   }
-  sHtml(h+`</tbody></table></div>`);
+  return h+`</tbody></table>`;
 }
-
-// ════════════════════════════════════════════════════════
-//  VIEW 6 — SPARKLINES
-// ════════════════════════════════════════════════════════
-function vSpark(){
-  setLeg([['#16a34a','#fff','Good'],['#d97706','#fff','Warning'],['#dc2626','#fff','Critical']]);
+function buildSparkHtml(){
   const blocks=gb(),cols=gc(),allSys=document.getElementById('sys-sel').value==='All Systems';
-  const SW=180,SH=28;
-  let h=`<div class="spk-wrap"><table class="spk"><thead><tr><th class="sa">Area of Responsibility</th><th style="min-width:${SW}px">Sparkline</th><th>Last 4wk</th><th>Latest</th><th>Trend</th><th>Δ 2wk</th></tr></thead><tbody>`;
+  const SW=140,SH=26;
+  let h=`<table class="spk"><thead><tr><th class="sa">Area of Responsibility</th><th style="min-width:${SW}px">Sparkline</th><th>Last 4wk</th><th>Latest</th><th>Trend</th><th>Δ 2wk</th></tr></thead><tbody>`;
   for(const b of blocks){
     if(allSys)h+=`<tr class="ss"><td colspan="6">▸  ${es(b.system)}</td></tr>`;
     for(const r of b.rows){
@@ -711,8 +735,16 @@ function vSpark(){
       h+=`<tr class="sr2"><td class="sac${r.isRating?' ir':''}">${es(r.aor)}</td><td>${svg}</td><td>${l4s}</td><td><span class="sbadge" style="background:${s2.bg};color:${s2.fg}">${latest!==null?Math.round(latest):'—'}</span></td><td style="text-align:center">${tr}</td><td style="text-align:center">${dp}</td></tr>`;
     }
   }
-  sHtml(h+`</tbody></table></div>`);
+  return h+`</tbody></table>`;
 }
+function vWowSpark(){
+  const h=`<div class="ws-stack">
+    <section class="ov-panel"><div class="ov-panel-hd"><h3>Week-over-Week Δ</h3><div class="ov-panel-leg"><span class="lpill" style="background:#dcfce7;color:#15803d">▲ Improved</span><span class="lpill" style="background:#fee2e2;color:#b91c1c">▼ Declined</span><span class="lpill" style="background:#f1f5f9;color:#64748b">● No change</span></div></div><div class="wow-wrap">${buildWowHtml()}</div></section>
+    <section class="ov-panel"><div class="ov-panel-hd"><h3>Sparklines</h3><div class="ov-panel-leg"><span class="lpill" style="background:#16a34a;color:#fff">Good</span><span class="lpill" style="background:#d97706;color:#fff">Warning</span><span class="lpill" style="background:#dc2626;color:#fff">Critical</span></div></div><div class="spk-wrap">${buildSparkHtml()}</div></section>
+  </div>`;
+  sHtmlFlush(h);
+}
+
 
 // ════════════════════════════════════════════════════════
 //  UI
