@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://login.microsoftonline.com https://graph.microsoft.com; img-src 'self' data:; frame-src https://login.microsoftonline.com">
-<title>SecurityBridge | S&C Tracker</title>
+<title>Vestas SAP Security & Compliance Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -16,19 +16,20 @@
   --bg:#101927;--surface:#182335;--surface2:#1e2c42;--surface3:#26374f;
   --border:#314563;--border-lt:#405678;
   --fg:#f2f6fc;--fg2:#a7b8d1;--fg3:#7488a6;
-  --accent:#0070f2;--accent2:#4da2ff;--accent-dim:rgba(0,112,242,.2);--accent-glow:rgba(0,112,242,.5);
-  --sec:#ff6b4f;--sec-dim:rgba(255,107,79,.2);
+  --accent:#00b5e4;--accent2:#3fc9ec;--accent-dim:rgba(0,181,228,.2);--accent-glow:rgba(0,181,228,.5);
+  --sec:#e8c082;--sec-dim:rgba(232,192,130,.2);
   --hdr:#0b1420;--hdr2:#101c2e;
-  --sys-bg:rgba(0,112,242,.16);--sys-fg:#6cb2ff;
+  --sys-bg:rgba(0,181,228,.16);--sys-fg:#5fd0f2;
   --radius:6px;--sw:224px;
   --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
 }
 html,body{width:100%;min-width:100%;height:100%;font-family:var(--sans);background:var(--bg);color:var(--fg);font-size:21px;overflow:hidden;display:flex}
-body{background-image:linear-gradient(rgba(0,112,242,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,112,242,.05) 1px,transparent 1px);background-size:34px 34px}
+body{background-image:linear-gradient(rgba(0,181,228,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,181,228,.05) 1px,transparent 1px);background-size:34px 34px}
 /* ── Sidebar ── */
 #sidebar{width:var(--sw);min-width:var(--sw);height:100vh;background:var(--hdr);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
 .sb-brand{display:flex;align-items:center;gap:8px;padding:18px 16px 14px;border-bottom:1px solid var(--border)}
-.sb-logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#0070f2,#ff5a3c);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 0 16px var(--accent-dim)}
+.sb-logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#00b5e4,#e8c082);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:700;color:#0b1420;flex-shrink:0;box-shadow:0 0 16px var(--accent-dim)}
+.sb-logo-img{width:32px;height:36px;object-fit:contain;flex-shrink:0}
 .sb-brand-t{font-weight:700;font-size:17px;color:var(--fg);letter-spacing:-.2px}
 .sb-brand-s{font-size:12px;color:var(--fg3)}
 .sb-sec{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--fg3);padding:14px 18px 6px;text-transform:uppercase}
@@ -49,7 +50,7 @@ body{background-image:linear-gradient(rgba(0,112,242,.05) 1px,transparent 1px),l
 .auth-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 12px;border:none;border-radius:var(--radius);font-size:16px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;margin-bottom:6px}
 .auth-btn.primary{background:var(--accent);color:#fff}
 .auth-btn.primary:hover{background:var(--accent2)}
-.auth-btn.danger{background:var(--sec-dim);color:#ff8266}
+.auth-btn.danger{background:rgba(255,90,60,.15);color:#ff8266}
 .spin{width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;display:none}
 .auth-btn.busy .spin{display:block}
 @keyframes rot{to{transform:rotate(360deg)}}
@@ -209,8 +210,9 @@ table.spk .sr2:nth-child(odd) td{background:var(--surface2)}
 <body>
 <nav id="sidebar">
   <div class="sb-brand">
-    <div class="sb-logo">🛡️</div>
-    <div><div class="sb-brand-t">SecurityBridge</div><div class="sb-brand-s">S&amp;C Tracker</div></div>
+    <img class="sb-logo-img" src="./vestas-logo.svg" alt="Vestas" onerror="this.style.display='none';document.getElementById('sbLogoFallback').style.display='flex'">
+    <div class="sb-logo" id="sbLogoFallback" style="display:none">V</div>
+    <div><div class="sb-brand-t">Vestas</div><div class="sb-brand-s">SAP Security &amp; Compliance</div></div>
   </div>
   <div class="sb-sec">Dashboards</div>
   <div id="nav-items"></div>
@@ -255,7 +257,7 @@ table.spk .sr2:nth-child(odd) td{background:var(--surface2)}
   <div class="banner ok"  id="bok" role="status"><span id="bokt"></span><button class="bx" type="button" aria-label="Dismiss notification" onclick="this.parentElement.classList.remove('show')">✕</button></div>
   <div class="banner info" id="binfo" role="status"><span id="binfot"></span><button class="bx" type="button" aria-label="Dismiss notification" onclick="this.parentElement.classList.remove('show')">✕</button></div>
   <div id="cards">
-    <div class="card"><div class="card-bar" style="background:#0070f2"></div><div class="card-body"><div class="card-lbl">Overall Rating</div><div class="card-val" id="k1" style="color:#3d95ff">--</div><div class="card-sub">Latest week avg</div></div></div>
+    <div class="card"><div class="card-bar" style="background:#00b5e4"></div><div class="card-body"><div class="card-lbl">Overall Rating</div><div class="card-val" id="k1" style="color:#00b5e4">--</div><div class="card-sub">Latest week avg</div></div></div>
     <div class="card"><div class="card-bar" style="background:#34d399"></div><div class="card-body"><div class="card-lbl">Avg AoR Score</div><div class="card-val" id="k2" style="color:#34d399">--</div><div class="card-sub" id="k2s">--</div></div></div>
     <div class="card"><div class="card-bar" style="background:#ff5a3c"></div><div class="card-body"><div class="card-lbl">Critical Areas</div><div class="card-val" id="k3" style="color:#ff5a3c">--</div><div class="card-sub">Score ≤ 34</div></div></div>
     <div class="card"><div class="card-bar" style="background:#34d399"></div><div class="card-body"><div class="card-lbl">Strong Areas</div><div class="card-val" id="k4" style="color:#34d399">--</div><div class="card-sub">Score ≥ 61</div></div></div>
@@ -276,8 +278,7 @@ const TENANT_ID = 'c0701940-7b3f-4116-a59f-159078bc3c63';
 const SP_HOST    = 'vestas.sharepoint.com';
 const SP_SITE    = '/sites/DEP-IT-ISRMDashboard-005_SAPSECURITYHARDENING';
 const SP_LIST    = 'SB_Scores';
-// Keep delegated permissions to the minimum required by the current Graph calls.
-// Files.Read.All was not used by this dashboard and has intentionally been removed.
+
 const SCOPES     = ['Sites.Read.All','User.Read'];
 const GRAPH      = 'https://graph.microsoft.com/v1.0';
 
@@ -311,7 +312,7 @@ const VIEWS=[
   {key:'overview',label:'Overview',icon:'▤'},
   {key:'wowspark',label:'Week-over-Week & Sparklines',icon:'#'},
 ];
-const CC=['#3d95ff','#34d399','#fbbf24','#ff5a3c','#a78bfa','#22d3ee','#f472b6','#a3e635','#fb923c','#38bdf8','#818cf8','#2dd4bf','#facc15','#fb7185','#c084fc'];
+const CC=['#00b5e4','#34d399','#fbbf24','#ff5a3c','#a78bfa','#e8c082','#f472b6','#a3e635','#fb923c','#38bdf8','#818cf8','#2dd4bf','#facc15','#fb7185','#c084fc'];
 if(window.Chart){Chart.defaults.color='#8296b8';Chart.defaults.borderColor='#20304a';Chart.defaults.font.family="'IBM Plex Sans',sans-serif";}
 
 // ════════════════════════════════════════════════════════
@@ -609,7 +610,7 @@ function buildHeatmapHtml(){
   <tr class="mo-row"><th class="at">Area of Responsibility</th>`;
   mg.forEach(({mo,s,e})=>{
     const yr=cols[s]?.year||'';
-    h+=`<th colspan="${e-s+1}" style="border-left:2px solid #0070f2">${mo||''}${multiYear?' '+yr:''}</th>`;
+    h+=`<th colspan="${e-s+1}" style="border-left:2px solid #00b5e4">${mo||''}${multiYear?' '+yr:''}</th>`;
   });
   h+=`</tr><tr class="cw-row"><th class="at"></th>`;
   for(let i=0;i<cols.length;i++){const bl=i>0&&cols[i].month!==cols[i-1].month?'border-left:2px solid #20304a':'';h+=`<th style="${bl}">${cols[i].cw}</th>`;}
@@ -644,7 +645,7 @@ function buildPostureChart(canvas){
     return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:null;
   });
   chartInsts.push(new Chart(canvas.getContext('2d'),{
-    type:'line',data:{labels:cols.map(column=>`${column.cw} ${column.year}`),datasets:[{label:'Overall security posture',data:posture,borderColor:'#3d95ff',backgroundColor:'rgba(61,149,255,.15)',fill:true,pointRadius:2,pointHoverRadius:5,borderWidth:2,tension:.3,spanGaps:true}]},
+    type:'line',data:{labels:cols.map(column=>`${column.cw} ${column.year}`),datasets:[{label:'Overall security posture',data:posture,borderColor:'#00b5e4',backgroundColor:'rgba(0,181,228,.15)',fill:true,pointRadius:2,pointHoverRadius:5,borderWidth:2,tension:.3,spanGaps:true}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:context=>`Overall score: ${context.parsed.y===null?'—':Math.round(context.parsed.y)}`}}},scales:{y:{min:0,max:100,grid:{color:'#20304a'},ticks:{font:{size:11}}},x:{grid:{display:false},ticks:{font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:10}}}}
   }));
 }
@@ -771,11 +772,9 @@ function showErr(m){const e=document.getElementById('berr');document.getElementB
 function showOk(m){const e=document.getElementById('bok');document.getElementById('bokt').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),6000);}
 function showInfo(m){const e=document.getElementById('binfo');document.getElementById('binfot').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),8000);}
 
-// ════════════════════════════════════════════════════════
+
 if (window.opener && window.opener !== window) {
-  // This page loaded inside a popup MSAL opened for sign-in.
-  // Do nothing — let MSAL's own internal popup handler
-  // process the auth response and close this window.
+
 } else {
   buildNav();
   showWelcome();
