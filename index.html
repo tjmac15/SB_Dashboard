@@ -146,7 +146,12 @@ table.hm .dr td.at{padding:2px 12px;font-size:15px;white-space:nowrap;color:var(
 table.hm .dr td.at.ir{font-weight:700;color:var(--fg);border-left:3px solid var(--sec)}
 table.hm .dr{cursor:pointer}
 table.hm .dr:hover td.at{background:var(--surface3)}
-table.hm .dr.row-selected td.at{background:var(--accent-dim);color:var(--accent2);font-weight:700;border-left:3px solid var(--accent)}
+table.hm .dr.row-selected td.at{background:var(--accent-dim);color:var(--accent2);font-weight:700}
+table.hm .dr.row-selected td{border-top:2px solid #0f172a;border-bottom:2px solid #0f172a}
+table.hm .dr.row-selected td:first-child{border-left:2px solid #0f172a}
+table.hm .dr.row-selected td:last-child{border-right:2px solid #0f172a}
+table.hm.has-selection .dr:not(.row-selected) td:not(.at){filter:grayscale(1) opacity(.5)}
+table.hm.has-selection .dr:not(.row-selected) td.at{color:var(--fg3)}
 table.hm .dr:nth-child(odd) td{background:var(--surface2)}
 .sc{display:block;border-radius:4px;padding:3px 2px;min-width:36px;text-align:center;font-weight:600;font-size:14px}
 .sg{background:rgba(52,211,153,.15);color:#16a34a}.sw{background:rgba(251,191,36,.15);color:#d97706}
@@ -162,7 +167,12 @@ table.wow .wr td.wac{padding:4px 14px;font-size:15px;color:var(--fg2);font-famil
 table.wow .wr td.wac.ir{font-weight:700;color:var(--fg);border-left:2px solid var(--sec)}
 table.wow .wr{cursor:pointer}
 table.wow .wr:hover td.wac{background:var(--surface3)}
-table.wow .wr.row-selected td.wac{background:var(--accent-dim);color:var(--accent2);font-weight:700;border-left:3px solid var(--accent)}
+table.wow .wr.row-selected td.wac{background:var(--accent-dim);color:var(--accent2);font-weight:700}
+table.wow .wr.row-selected td{border-top:2px solid #0f172a;border-bottom:2px solid #0f172a}
+table.wow .wr.row-selected td:first-child{border-left:2px solid #0f172a}
+table.wow .wr.row-selected td:last-child{border-right:2px solid #0f172a}
+table.wow.has-selection .wr:not(.row-selected) td:not(.wac){filter:grayscale(1) opacity(.5)}
+table.wow.has-selection .wr:not(.row-selected) td.wac{color:var(--fg3)}
 table.wow .wr:nth-child(odd) td{background:var(--surface2)}
 .dp{display:inline-block;border-radius:8px;padding:3px 10px;font-size:14px;font-weight:700;font-family:var(--mono);white-space:nowrap;width:100%;text-align:center}
 .du{background:rgba(52,211,153,.15);color:#16a34a}.dd{background:rgba(220,38,38,.16);color:#b91c1c}
@@ -178,7 +188,12 @@ table.spk .sr2 td.sac{padding:3px 14px;color:var(--fg2);font-size:15px;white-spa
 table.spk .sr2 td.sac.ir{font-weight:700;color:var(--fg);border-left:3px solid var(--sec)}
 table.spk .sr2{cursor:pointer}
 table.spk .sr2:hover td.sac{background:var(--surface3)}
-table.spk .sr2.row-selected td.sac{background:var(--accent-dim);color:var(--accent2);font-weight:700;border-left:3px solid var(--accent)}
+table.spk .sr2.row-selected td.sac{background:var(--accent-dim);color:var(--accent2);font-weight:700}
+table.spk .sr2.row-selected td{border-top:2px solid #0f172a;border-bottom:2px solid #0f172a}
+table.spk .sr2.row-selected td:first-child{border-left:2px solid #0f172a}
+table.spk .sr2.row-selected td:last-child{border-right:2px solid #0f172a}
+table.spk.has-selection .sr2:not(.row-selected) td:not(.sac){filter:grayscale(1) opacity(.5)}
+table.spk.has-selection .sr2:not(.row-selected) td.sac{color:var(--fg3)}
 table.spk .sr2:nth-child(odd) td{background:var(--surface2)}
 .sbadge{display:inline-block;border-radius:20px;padding:2px 8px;font-size:14px;font-weight:700;font-family:var(--mono)}
 .strend{display:inline-block;font-size:20px;font-weight:700}
@@ -525,7 +540,11 @@ function toggleRowSelect(tr){
   const table=tr.closest('table');
   const was=tr.classList.contains('row-selected');
   table.querySelectorAll('tr.row-selected').forEach(r=>r.classList.remove('row-selected'));
-  if(!was)tr.classList.add('row-selected');
+  table.classList.remove('has-selection');
+  if(!was){
+    tr.classList.add('row-selected');
+    table.classList.add('has-selection');
+  }
 }
 
 
@@ -795,6 +814,7 @@ function showInfo(m){const e=document.getElementById('binfo');document.getElemen
 // ════════════════════════════════════════════════════════
 //  BOOT
 // ════════════════════════════════════════════════════════
+
 if (window.opener && window.opener !== window) {
 
 } else {
