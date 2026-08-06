@@ -115,7 +115,7 @@ body{background-image:linear-gradient(rgba(0,181,228,.04) 1px,transparent 1px),l
 .rating-list-title{font-size:15px;font-weight:500;color:var(--fg2);text-transform:uppercase;letter-spacing:.4px;margin:4px 0 7px}.rating-list{list-style:none}.rating-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:15px;color:var(--fg2)}.rating-list li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rating-pill{font:700 14px var(--mono);min-width:30px;text-align:center;padding:3px 5px;border-radius:4px}.rating-pill.good{background:rgba(52,211,153,.15);color:#16a34a}.rating-pill.warning{background:rgba(251,191,36,.15);color:#d97706}.rating-pill.critical{background:rgba(220,38,38,.16);color:#b91c1c}.rating-pill.empty{background:var(--surface3);color:var(--fg3)}
 .rating-list.systems li{gap:10px}.sys-bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;min-width:0}.sys-bar-fill{height:100%;border-radius:3px}.sys-bar-name{flex:0 0 auto;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* ── Merged Overview grid ── */
-.ov-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:auto 400px 400px auto;gap:10px;min-height:0}
+.ov-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:auto 400px 400px;gap:10px;min-height:0}
 .ov-comments{grid-column:1 / -1}
 .cm-form{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border)}
 .cm-form select,.cm-form input{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:7px 9px;font-size:14px;color:var(--fg);font-family:var(--sans)}
@@ -821,7 +821,10 @@ async function addComment(){
     const author=account?.name||account?.username||'Unknown';
     const body={fields:{Title:`${system} ${aor} ${week}`,System:system,AoR:aor,Week:week,Year:year,CommentType:commentType,Comment:comment,Author:author}};
     const r=await fetch(`${GRAPH}/sites/${site.id}/lists/${listId}/items`,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!r.ok)throw new Error(`Failed to save comment: ${r.status}`);
+    if(!r.ok){
+      if(r.status===403)throw new Error('You have read-only access to this list — ask your SharePoint admin to grant Contribute/Write permission on sb_comments to add comments.');
+      throw new Error(`Failed to save comment: ${r.status}`);
+    }
     allComments.unshift({system,aor,week,year,commentType,comment,author,dateAdded:new Date().toISOString()});
     showOk('✅ Comment added');
     renderView();
@@ -837,7 +840,6 @@ function vOverviewMega(){
     <section class="ov-panel"><div class="ov-panel-hd"><h3>Trend Lines by AoR</h3><div class="ov-panel-leg"><span class="lpill" style="background:rgba(220,38,38,.15);color:#b91c1c">Critical</span><span class="lpill" style="background:rgba(251,191,36,.15);color:#d97706">Warning</span></div></div><div class="ov-chart"><canvas id="ov-trend"></canvas></div></section>
     <section class="ov-panel"><div class="ov-panel-hd"><h3>Weakest AoRs</h3></div><div class="ov-chart"><canvas id="ov-weakest"></canvas></div></section>
     <section class="ov-panel"><div class="ov-panel-hd"><h3>Critical by System</h3></div><div class="ov-chart"><canvas id="ov-crit"></canvas></div></section>
-    <section class="ov-panel ov-comments"><div class="ov-panel-hd"><h3>Comments</h3></div>${buildCommentsHtml()}</section>
   </div>`;
   sHtmlFlush(h);
   buildPostureChart(document.getElementById('ov-posture'));
@@ -900,6 +902,7 @@ function vWowSpark(){
   const h=`<div class="ws-stack">
     <section class="ov-panel"><div class="ov-panel-hd"><h3>Week-over-Week Δ</h3><div class="ov-panel-leg"><span class="lpill" style="background:rgba(52,211,153,.15);color:#16a34a">▲ Improved</span><span class="lpill" style="background:rgba(220,38,38,.15);color:#b91c1c">▼ Declined</span><span class="lpill" style="background:var(--surface3);color:var(--fg2)">● No change</span></div></div><div class="wow-wrap">${buildWowHtml()}</div></section>
     <section class="ov-panel"><div class="ov-panel-hd"><h3>Sparklines</h3><div class="ov-panel-leg"><span class="lpill" style="background:#16a34a;color:#04140d">Good</span><span class="lpill" style="background:#d97706;color:#221a03">Warning</span><span class="lpill" style="background:#dc2626;color:#fff">Critical</span></div></div><div class="spk-wrap">${buildSparkHtml()}</div></section>
+    <section class="ov-panel ov-comments"><div class="ov-panel-hd"><h3>Comments</h3></div>${buildCommentsHtml()}</section>
   </div>`;
   sHtmlFlush(h);
 }
