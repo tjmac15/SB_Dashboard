@@ -168,7 +168,9 @@ table.hm .dr.row-selected td:last-child{border-right:2px solid #0f172a}
 table.hm.has-selection .dr:not(.row-selected) td:not(.at){filter:grayscale(1) opacity(.5)}
 table.hm.has-selection .dr:not(.row-selected) td.at{color:var(--fg3)}
 table.hm .dr:nth-child(odd) td{background:var(--surface2)}
-.sc{display:block;border-radius:4px;padding:3px 2px;min-width:36px;text-align:center;font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+.sc{display:block;border-radius:4px;padding:3px 2px;min-width:36px;text-align:center;font-weight:700;font-size:15px;font-variant-numeric:tabular-nums;position:relative}
+.sc.has-comment{cursor:help}
+.sc.has-comment::after{content:'';position:absolute;top:0;right:0;border-width:0 7px 7px 0;border-style:solid;border-color:transparent #dc2626 transparent transparent}
 .sg{background:rgba(52,211,153,.15);color:#16a34a}.sw{background:rgba(251,191,36,.15);color:#d97706}
 .sr{background:rgba(220,38,38,.16);color:#b91c1c}.sn{background:var(--surface3);color:var(--fg3)}
 /* ── WoW ── */
@@ -579,6 +581,10 @@ function sc(v){
 function gb(){const s=document.getElementById('sys-sel').value;return s==='All Systems'?allBlocks:allBlocks.filter(b=>b.system===s);}
 function gc(){return allColumns.slice(-cwLimit);}
 function es(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function attrEsc(s){return es(s).replace(/"/g,'&quot;');}
+function findComments(system,aor,cw,year){
+  return allComments.filter(c=>c.system===system&&c.aor===aor&&c.week===cw&&String(c.year)===String(year));
+}
 function toggleRowSelect(tr){
   const table=tr.closest('table');
   const was=tr.classList.contains('row-selected');
@@ -702,7 +708,10 @@ function buildHeatmapHtml(){
     for(let ci=0;ci<cols.length;ci++){
       const v=r.scores[cols[ci].index]??null;
       const s2=sc(v);const bl=ci>0&&cols[ci].month!==cols[ci-1].month?'border-left:2px solid #dfe4ec':'';
-      h+=`<td style="${bl}"><span class="sc ${s2.cl}">${iv(v)?Math.round(v):'—'}</span></td>`;
+      const cellComments=findComments(block.system,r.aor,cols[ci].cw,cols[ci].year);
+      const hasComment=cellComments.length>0;
+      const tip=hasComment?attrEsc(cellComments.map(c=>`[${c.commentType||'Note'}] ${c.comment} — ${c.author||'Unknown'}`).join('\n')):'';
+      h+=`<td style="${bl}"><span class="sc ${s2.cl}${hasComment?' has-comment':''}"${hasComment?` title="${tip}"`:''}>${iv(v)?Math.round(v):'—'}</span></td>`;
     }
     h+=`</tr>`;
   }
