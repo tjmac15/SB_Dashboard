@@ -326,7 +326,7 @@ const SP_LIST    = 'SB_Scores';
 const SP_COMMENTS_LIST = 'sb_comments';
 // Keep delegated permissions to the minimum required by the current Graph calls.
 // Files.Read.All was not used by this dashboard and has intentionally been removed.
-const SCOPES     = ['Sites.Read.All','User.Read'];
+const SCOPES     = ['Sites.Read.All','Sites.Selected','User.Read'];
 const GRAPH      = 'https://graph.microsoft.com/v1.0';
 
 
@@ -929,8 +929,15 @@ function showInfo(m){const e=document.getElementById('binfo');document.getElemen
 // ════════════════════════════════════════════════════════
 //  BOOT
 // ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+//  POPUP GUARD — prevents the dashboard from re-initializing
+//  inside the MSAL auth popup window itself (fixes
+//  block_nested_popups / interaction_in_progress errors)
+// ════════════════════════════════════════════════════════
 if (window.opener && window.opener !== window) {
-
+  // This page loaded inside a popup MSAL opened for sign-in.
+  // Do nothing — let MSAL's own internal popup handler
+  // process the auth response and close this window.
 } else {
   buildNav();
   showWelcome();
