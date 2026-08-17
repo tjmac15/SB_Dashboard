@@ -25,7 +25,7 @@
 }
 html,body{width:100%;min-width:100%;height:100%;font-family:var(--sans);background:var(--bg);color:var(--fg);font-size:23px;overflow:hidden;display:flex}
 body{background-image:linear-gradient(rgba(0,181,228,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,181,228,.04) 1px,transparent 1px);background-size:34px 34px}
-/* ── Sidebar ── */
+
 #sidebar{width:var(--sw);min-width:var(--sw);height:100vh;background:var(--hdr);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
 .sb-brand{display:flex;flex-direction:column;gap:7px;padding:18px 16px 14px;border-bottom:1px solid var(--border)}
 .sb-logo-wrap{height:36px;display:flex;align-items:center}
@@ -47,7 +47,7 @@ body{background-image:linear-gradient(rgba(0,181,228,.04) 1px,transparent 1px),l
 .sb-ctrl input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;height:4px;margin-bottom:14px}
 .wk-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .wk-val{font-size:15px;font-weight:700;color:var(--fg);font-family:var(--mono)}
-/* ── Auth ── */
+
 .auth-area{padding:0 14px 14px}
 .auth-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 12px;border:none;border-radius:var(--radius);font-size:16px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;margin-bottom:6px}
 .auth-btn.primary{background:var(--accent);color:#fff}
@@ -66,7 +66,7 @@ body{background-image:linear-gradient(rgba(0,181,228,.04) 1px,transparent 1px),l
 .sync-time{font-size:12px;color:var(--fg3)}
 .sync-btn{font-size:14px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:3px}
 .sync-btn:hover{background:var(--accent-dim)}
-/* ── Main ── */
+
 #content{flex:1;width:calc(100vw - var(--sw));display:flex;flex-direction:column;overflow:hidden;min-width:0}
 #topbar{background:var(--hdr2);padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
 #topbar::after{content:'';position:absolute;bottom:0;left:0;width:36%;height:1px;background:linear-gradient(90deg,transparent,var(--accent2),transparent);animation:scan 5s linear infinite}
@@ -77,7 +77,7 @@ body{background-image:linear-gradient(rgba(0,181,228,.04) 1px,transparent 1px),l
 .src-chip.show{display:inline}
 #tu{font-size:15px;color:var(--fg3);display:none;font-family:var(--mono)}
 #tu.show{display:block}
-/* ── Banners ── */
+
 .banner{margin:8px 24px 0;padding:9px 14px;border-radius:var(--radius);font-size:16px;display:none;align-items:center;gap:10px;border:1px solid}
 .banner.show{display:flex}
 .banner.err{background:rgba(220,38,38,.13);border-color:rgba(220,38,38,.4);color:#b91c1c}
@@ -85,7 +85,7 @@ body{background-image:linear-gradient(rgba(0,181,228,.04) 1px,transparent 1px),l
 .banner.info{background:var(--accent-dim);border-color:rgba(0,181,228,.4);color:#0093ba}
 .bx{margin-left:auto;cursor:pointer;opacity:.5}
 .bx:hover{opacity:1}
-/* ── KPI cards ── */
+
 #cards{display:flex;gap:10px;padding:10px 24px 8px;flex-shrink:0}
 .card{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .card-bar{height:3px}
@@ -93,17 +93,17 @@ body{background-image:linear-gradient(rgba(0,181,228,.04) 1px,transparent 1px),l
 .card-lbl{font-size:15px;font-weight:500;color:var(--fg3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px}
 .card-val{font-size:31px;font-weight:700;font-family:var(--mono);line-height:1;text-shadow:0 0 16px currentColor}
 .card-sub{font-size:14px;color:var(--fg3);margin-top:3px}
-/* ── View bar ── */
+
 #view-bar{display:flex;align-items:center;justify-content:space-between;padding:2px 24px 6px;flex-shrink:0}
 #vt{font-size:17px;font-weight:500;color:var(--fg);letter-spacing:.4px}
 #legend{display:flex;gap:6px}
 .lpill{font-size:14px;font-weight:700;padding:3px 9px;border-radius:20px}
-/* ── Hosts ── */
+
 #chart-host{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:0 24px 18px;padding:18px;overflow:auto;display:none}
 #html-host{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:0 24px 18px;overflow:auto;display:none}
 #html-host.flush{background:none;border:0;overflow-y:auto;overflow-x:hidden;padding:0}
 .chart-container{position:relative;height:400px;padding:6px}
-/* Heatmap detail view */
+
 .heatmap-layout{display:grid;grid-template-columns:minmax(0,1fr) 480px;min-height:100%;height:100%}
 .heatmap-main{min-width:0;display:flex;flex-direction:column}.heatmap-toolbar{display:flex;align-items:end;justify-content:space-between;gap:14px;padding:16px 18px 8px;border-bottom:1px solid var(--border)}
 .heatmap-toolbar label{display:flex;flex-direction:column;gap:4px;font-size:15px;font-weight:500;color:var(--fg2);letter-spacing:.4px;text-transform:uppercase}.heatmap-toolbar select{min-width:240px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:7px 9px;color:var(--fg);font:inherit;font-size:16px}
@@ -114,7 +114,7 @@ body{background-image:linear-gradient(rgba(0,181,228,.04) 1px,transparent 1px),l
 .rating-counts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:17px}.rating-count{background:var(--surface3);border:1px solid var(--border);border-radius:var(--radius);padding:8px;text-align:center}.rating-count strong{display:block;font:700 26px/1 var(--mono)}.rating-count span{font-size:12px;color:var(--fg3);text-transform:uppercase}.rating-count.critical strong{color:#dc2626}.rating-count.warning strong{color:#d97706}.rating-count.good strong{color:#16a34a}
 .rating-list-title{font-size:15px;font-weight:500;color:var(--fg2);text-transform:uppercase;letter-spacing:.4px;margin:4px 0 7px}.rating-list{list-style:none}.rating-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:15px;color:var(--fg2)}.rating-list li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rating-pill{font:700 14px var(--mono);min-width:30px;text-align:center;padding:3px 5px;border-radius:4px}.rating-pill.good{background:rgba(52,211,153,.15);color:#16a34a}.rating-pill.warning{background:rgba(251,191,36,.15);color:#d97706}.rating-pill.critical{background:rgba(220,38,38,.16);color:#b91c1c}.rating-pill.empty{background:var(--surface3);color:var(--fg3)}
 .rating-list.systems li{gap:10px}.sys-bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;min-width:0}.sys-bar-fill{height:100%;border-radius:3px}.sys-bar-name{flex:0 0 auto;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* ── Merged Overview grid ── */
+
 .ov-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:auto 400px 400px;gap:10px;min-height:0}
 .ov-comments{grid-column:1 / -1}
 .cm-form{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border)}
@@ -146,7 +146,7 @@ body{background-image:linear-gradient(rgba(0,181,228,.04) 1px,transparent 1px),l
 .ws-stack{display:flex;flex-direction:column;gap:10px}
 .ws-stack .ov-panel{overflow:visible}
 .ws-stack .wow-wrap,.ws-stack .spk-wrap{overflow:visible;padding:6px}
-/* ── Tables ── */
+
 .hm-wrap{overflow:auto;padding:8px}
 table.hm{border-collapse:separate;border-spacing:2px;font-size:15px;font-family:var(--sans);width:100%;height:100%}
 table.hm tbody tr{height:1px}
@@ -173,7 +173,7 @@ table.hm .dr:nth-child(odd) td{background:var(--surface2)}
 .sc.has-comment::after{content:'';position:absolute;top:0;right:0;border-width:0 7px 7px 0;border-style:solid;border-color:transparent #dc2626 transparent transparent}
 .sg{background:rgba(52,211,153,.15);color:#16a34a}.sw{background:rgba(251,191,36,.15);color:#d97706}
 .sr{background:rgba(220,38,38,.16);color:#b91c1c}.sn{background:var(--surface3);color:var(--fg3)}
-/* ── WoW ── */
+
 .wow-wrap{padding:8px;overflow:auto}
 table.wow{border-collapse:separate;border-spacing:2px;font-size:15px;width:100%}
 table.wow thead th{background:var(--hdr);color:var(--fg2);padding:8px 10px;font-size:12px;font-weight:700;white-space:nowrap;text-align:center;font-family:var(--mono)}
@@ -194,7 +194,7 @@ table.wow .wr:nth-child(odd) td{background:var(--surface2)}
 .dp{display:inline-block;border-radius:8px;padding:3px 10px;font-size:14px;font-weight:700;font-family:var(--mono);white-space:nowrap;width:100%;text-align:center}
 .du{background:rgba(52,211,153,.15);color:#16a34a}.dd{background:rgba(220,38,38,.16);color:#b91c1c}
 .de{background:var(--surface3);color:var(--fg2)}.dn{background:transparent;color:var(--fg3)}
-/* ── Sparklines ── */
+
 .spk-wrap{overflow:auto;padding:8px}
 table.spk{border-collapse:separate;border-spacing:2px;font-size:15px;width:100%}
 table.spk thead th{background:var(--hdr);color:var(--fg2);padding:7px 8px;font-size:12px;font-weight:700;white-space:nowrap;text-align:center}
@@ -214,14 +214,14 @@ table.spk.has-selection .sr2:not(.row-selected) td.sac{color:var(--fg3)}
 table.spk .sr2:nth-child(odd) td{background:var(--surface2)}
 .sbadge{display:inline-block;border-radius:20px;padding:2px 8px;font-size:14px;font-weight:700;font-family:var(--mono)}
 .strend{display:inline-block;font-size:20px;font-weight:700}
-/* ── Overlay ── */
+
 #overlay{position:fixed;inset:0;background:rgba(3,7,14,.88);display:none;align-items:center;justify-content:center;z-index:200;flex-direction:column;backdrop-filter:blur(2px)}
 #overlay.show{display:flex}
 .ov-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:36px 52px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.5)}
 .ov-spin{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:rot .8s linear infinite;margin:0 auto 18px}
 .ov-t{font-size:20px;font-weight:600;color:var(--fg);margin-bottom:5px}
 .ov-s{font-size:16px;color:var(--fg3)}
-/* ── Welcome ── */
+
 .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px}
 .welcome-icon{font-size:64px;margin-bottom:20px}
 .welcome-title{font-size:24px;font-weight:700;color:var(--fg);margin-bottom:8px}
@@ -319,16 +319,12 @@ table.spk .sr2:nth-child(odd) td{background:var(--surface2)}
 const CLIENT_ID = '2d62ed1b-5160-47c6-a26e-005e8f62006c';
 const TENANT_ID = 'c0701940-7b3f-4116-a59f-159078bc3c63';
 
-// SharePoint List config
 const SP_HOST    = 'vestas.sharepoint.com';
 const SP_SITE    = '/sites/DEP-IT-ISRMDashboard-005_SAPSECURITYHARDENING';
 const SP_LIST    = 'SB_Scores';
 const SP_COMMENTS_LIST = 'sb_comments';
-// Keep delegated permissions to the minimum required by the current Graph calls.
-// Files.Read.All was not used by this dashboard and has intentionally been removed.
 const SCOPES     = ['Sites.Read.All','Sites.Selected','User.Read'];
 const GRAPH      = 'https://graph.microsoft.com/v1.0';
-
 
 function assertSafeRuntime(){
   const isLocal=['localhost','127.0.0.1','[::1]'].includes(window.location.hostname);
@@ -337,9 +333,6 @@ function assertSafeRuntime(){
   }
 }
 
-// ════════════════════════════════════════════════════════
-//  MSAL
-// ════════════════════════════════════════════════════════
 let msal_app = null;
 try {
   msal_app = new msal.PublicClientApplication({
@@ -349,9 +342,6 @@ try {
   });
 } catch(e){ console.warn('MSAL init skipped'); }
 
-// ════════════════════════════════════════════════════════
-//  STATE
-// ════════════════════════════════════════════════════════
 let account=null, allBlocks=[], allColumns=[], activeView='overview', cwLimit=52;
 let chartInsts=[], allItems=[], filteredYear='All Years', allComments=[];
 
@@ -362,9 +352,6 @@ const VIEWS=[
 const CC=['#00b5e4','#16a34a','#d97706','#dc2626','#a78bfa','#e8c082','#f472b6','#a3e635','#fb923c','#38bdf8','#818cf8','#2dd4bf','#facc15','#fb7185','#c084fc'];
 if(window.Chart){Chart.defaults.color='#5c6b82';Chart.defaults.borderColor='#dfe4ec';Chart.defaults.font.family="'IBM Plex Sans',sans-serif";}
 
-// ════════════════════════════════════════════════════════
-//  AUTH
-// ════════════════════════════════════════════════════════
 async function init(){
   try{assertSafeRuntime();}catch(e){showWelcome();showErr(e.message);return;}
   if(!msal_app){showWelcome();return;}
@@ -413,28 +400,22 @@ function onSignedOut(){
 }
 function setBusy(on){const b=document.getElementById('abtn'),s=document.getElementById('aspin');if(on){b.disabled=true;b.classList.add('busy');s.style.display='block';}else{b.disabled=false;b.classList.remove('busy');s.style.display='none';}}
 
-// ════════════════════════════════════════════════════════
-//  LOAD DATA FROM SHAREPOINT LIST
-// ════════════════════════════════════════════════════════
 async function loadData(){
   overlay('Connecting to SharePoint…','Loading score history');
   try{
     const token=await getToken();
 
-    // Get site
     overlay('Fetching data…','Reading SB_Scores list');
     const siteR=await fetch(`${GRAPH}/sites/${SP_HOST}:${SP_SITE}`,{headers:{Authorization:`Bearer ${token}`}});
     if(!siteR.ok)throw new Error(`Site fetch failed: ${siteR.status}`);
     const site=await siteR.json();
 
-    // Get list
     const listR=await fetch(`${GRAPH}/sites/${site.id}/lists?$filter=displayName eq '${SP_LIST}'`,{headers:{Authorization:`Bearer ${token}`}});
     if(!listR.ok)throw new Error(`List fetch failed: ${listR.status}`);
     const listD=await listR.json();
     if(!listD.value?.length)throw new Error(`List "${SP_LIST}" not found. Run the import script first.`);
     const listId=listD.value[0].id;
 
-    // Fetch ALL items with pagination
     overlay('Loading history…','Fetching all weekly scores');
     let items=[],nextLink=`${GRAPH}/sites/${site.id}/lists/${listId}/items?$expand=fields&$top=999`;
     while(nextLink){
@@ -456,7 +437,6 @@ async function loadData(){
       };
     }).filter(i=>i.system&&i.aor&&i.week&&Number.isInteger(i.year)&&i.year>0&&i.score!==null);
 
-    // Show filters
     document.getElementById('filtsep').style.display='block';
     document.getElementById('filtsec').style.display='block';
     document.getElementById('filtctrl').style.display='block';
@@ -464,12 +444,10 @@ async function loadData(){
     document.getElementById('syncrow').classList.add('show');
     document.getElementById('synct').textContent='Updated '+new Date().toLocaleTimeString();
 
-    // Populate year selector
     const years=[...new Set(allItems.map(i=>i.year))].sort((a,b)=>b-a);
     const yrSel=document.getElementById('yr-sel');
     yrSel.innerHTML='<option>All Years</option>'+years.map(y=>`<option>${y}</option>`).join('');
 
-    // Fetch comments (non-fatal — comments are supplementary to scores)
     try{
       overlay('Loading history…','Fetching comments');
       const cListR=await fetch(`${GRAPH}/sites/${site.id}/lists?$filter=displayName eq '${SP_COMMENTS_LIST}'`,{headers:{Authorization:`Bearer ${token}`}});
@@ -507,14 +485,9 @@ function onYearChange(){
   buildBlocks();
 }
 
-// ════════════════════════════════════════════════════════
-//  BUILD BLOCKS (data structure for views)
-// ════════════════════════════════════════════════════════
 function buildBlocks(){
-  // Filter by year
   const items=filteredYear==='All Years'?allItems:allItems.filter(i=>i.year===parseInt(filteredYear));
 
-  // Get all unique weeks sorted
   const periods=[...new Set(items.map(i=>i.period))].sort((a,b)=>{
     const [yearA,weekA]=a.split('|'),[yearB,weekB]=b.split('|');
     return Number(yearA)-Number(yearB)||Number(weekA.replace(/\D/g,''))-Number(weekB.replace(/\D/g,''));
@@ -524,13 +497,11 @@ function buildBlocks(){
     return {cw,year:Number(year),month:cwToMonth(cw),period,index};
   });
 
-  // Set weeks slider max
   const rng=document.getElementById('wkr');
   rng.min=Math.min(4,periods.length)||1;rng.max=periods.length;rng.value=periods.length;
   cwLimit=periods.length;
   document.getElementById('wkv').textContent=periods.length;
 
-  // Build blocks grouped by system
   const sysMap={};
   items.forEach(item=>{
     if(!sysMap[item.system])sysMap[item.system]={};
@@ -547,7 +518,6 @@ function buildBlocks(){
     })),
   }));
 
-  // Populate system selector
   const ss=document.getElementById('sys-sel'),selectedSystem=ss.value;
   ss.replaceChildren(new Option('All Systems'),...allBlocks.map(b=>new Option(b.system)));
   ss.value=allBlocks.some(b=>b.system===selectedSystem)?selectedSystem:'All Systems';
@@ -566,9 +536,6 @@ function cwToMonth(cw){
   return months[n]||'';
 }
 
-// ════════════════════════════════════════════════════════
-//  HELPERS
-// ════════════════════════════════════════════════════════
 const iv=v=>v!=null&&v!==''&&!isNaN(parseFloat(v));
 function lv(a){for(let i=a.length-1;i>=0;i--)if(iv(a[i]))return parseFloat(a[i]);return null;}
 function sc(v){
@@ -596,7 +563,6 @@ function toggleRowSelect(tr){
   }
 }
 
-
 function latS(){const d={};for(const b of allBlocks)for(const r of b.rows){if(r.isRating)continue;const v=lv(r.scores);if(v!==null){if(!d[r.aor])d[r.aor]=[];d[r.aor].push(v);}}const o={};for(const[a,vs]of Object.entries(d))o[a]=vs.reduce((a,b)=>a+b,0)/vs.length;return o;}
 function ovAvg(){const vs=[];for(const b of allBlocks)for(const r of b.rows)if(r.isRating){const v=lv(r.scores);if(v!==null)vs.push(v);}return vs.length?Math.round(vs.reduce((a,b)=>a+b,0)/vs.length):null;}
 
@@ -614,9 +580,6 @@ function updateCards(){
 
 function setLeg(items){document.getElementById('legend').innerHTML=items.map(([bg,fg,l])=>`<span class="lpill" style="background:${bg};color:${fg}">${l}</span>`).join('');}
 
-// ════════════════════════════════════════════════════════
-//  NAV
-// ════════════════════════════════════════════════════════
 function buildNav(){
   const el=document.getElementById('nav-items');
   el.innerHTML=VIEWS.map(v=>`<button type="button" class="nav-item${v.key===activeView?' active':''}" data-key="${v.key}" aria-current="${v.key===activeView?'page':'false'}"><span class="nav-icon" aria-hidden="true">${v.icon}</span>${v.label}</button>`).join('');
@@ -630,9 +593,6 @@ function buildNav(){
   }));
 }
 
-// ════════════════════════════════════════════════════════
-//  VIEW ROUTER
-// ════════════════════════════════════════════════════════
 function renderView(){
   if(!allBlocks.length){showWelcome();return;}
   document.getElementById('chart-host').style.display='none';
@@ -660,9 +620,6 @@ function showWelcome(){
   </div>`;
 }
 
-// ════════════════════════════════════════════════════════
-//  RANKING — latest RATING per system (all systems)
-// ════════════════════════════════════════════════════════
 function buildSystemRankHtml(){
   const ranked=allBlocks.map(b=>{
     const rr=b.rows.find(r=>r.isRating);
@@ -678,9 +635,6 @@ function buildSystemRankHtml(){
   }).join('');
 }
 
-// ════════════════════════════════════════════════════════
-//  HEATMAP PANEL (used inside merged Overview)
-// ════════════════════════════════════════════════════════
 function setHeatmapSystem(system){
   document.getElementById('sys-sel').value=system;
   renderView();
@@ -724,9 +678,6 @@ function buildHeatmapHtml(){
   return h;
 }
 
-// ════════════════════════════════════════════════════════
-//  CHART BUILDERS (targeted at a given canvas, for merged pages)
-// ════════════════════════════════════════════════════════
 function buildPostureChart(canvas){
   const cols=gc(),blocks=allBlocks;
   const posture=cols.map(column=>{
@@ -777,9 +728,6 @@ function buildCritChart(canvas){
   }));
 }
 
-// ════════════════════════════════════════════════════════
-//  COMMENTS PANEL (SB_Comments SharePoint list)
-// ════════════════════════════════════════════════════════
 const COMMENT_TYPES=['Accepted Risk','Note','Remediated','Other'];
 function buildCommentsHtml(){
   const sel=document.getElementById('sys-sel').value,allSys=sel==='All Systems';
@@ -841,7 +789,6 @@ async function addComment(){
   finally{if(btn){btn.disabled=false;btn.textContent='Add';}}
 }
 
-
 function vOverviewMega(){
   const h=`<div class="ov-grid">
     <section class="ov-panel ov-heatmap">${buildHeatmapHtml()}</section>
@@ -857,9 +804,6 @@ function vOverviewMega(){
   buildCritChart(document.getElementById('ov-crit'));
 }
 
-// ════════════════════════════════════════════════════════
-//  MERGED VIEW — WEEK-OVER-WEEK Δ + SPARKLINES
-// ════════════════════════════════════════════════════════
 function buildWowHtml(){
   const blocks=gb(),cols=gc(),allSys=document.getElementById('sys-sel').value==='All Systems';
   let dc=[];for(let i=1;i<cols.length;i++)dc.push({p:cols[i-1],c:cols[i]});
@@ -916,28 +860,13 @@ function vWowSpark(){
   sHtmlFlush(h);
 }
 
-
-// ════════════════════════════════════════════════════════
-//  UI
-// ════════════════════════════════════════════════════════
 function overlay(t,s){document.getElementById('ovt').textContent=t;document.getElementById('ovs').textContent=s;document.getElementById('overlay').classList.add('show');}
 function hideOverlay(){document.getElementById('overlay').classList.remove('show');}
 function showErr(m){const e=document.getElementById('berr');document.getElementById('berrt').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),12000);}
 function showOk(m){const e=document.getElementById('bok');document.getElementById('bokt').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),6000);}
 function showInfo(m){const e=document.getElementById('binfo');document.getElementById('binfot').textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),8000);}
 
-// ════════════════════════════════════════════════════════
-//  BOOT
-// ════════════════════════════════════════════════════════
-// ════════════════════════════════════════════════════════
-//  POPUP GUARD — prevents the dashboard from re-initializing
-//  inside the MSAL auth popup window itself (fixes
-//  block_nested_popups / interaction_in_progress errors)
-// ════════════════════════════════════════════════════════
 if (window.opener && window.opener !== window) {
-  // This page loaded inside a popup MSAL opened for sign-in.
-  // Do nothing — let MSAL's own internal popup handler
-  // process the auth response and close this window.
 } else {
   buildNav();
   showWelcome();
